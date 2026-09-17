@@ -1,136 +1,173 @@
-﻿An Among Us API that allows mods to add their own achievements!
+# Concerns regarding the promotion and conduct surrounding Achievements API
 
-# Features:
-- Easy implementation
-- Progressable achievements
-- An achievement menu
-- Lots of customization (coming soon)
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/672fa262-1b7c-416a-9ba4-e26f4c82a10b" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fc0b6b90-e3d1-4753-92b3-a348b8add78f" />
+I want to make it clear from the start that this is **not a complaint about the API itself**.
 
-For support, or just chatting, join the [discord](https://discord.gg/RJyNm9UaT7)!
+The Achievements API works. It is a functional project and there is nothing inherently wrong with someone developing an API that other mods can use.
 
->[!NOTE]
->**This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.**
+The issue is the behavior of its developer, **Shawarma**, particularly their conduct and interactions within the **AOU Discord server**.
 
-> Will probably hopefully be used in:
-> - Stargazer
-> - NewMod
+## The constant promotion
 
-> Thanks [pix](https://github.com/wanderingpix) for the help!
+There is a noticeable pattern of repeatedly asking, pushing, and insisting that other mods should add support for Achievements API.
 
-# Get Started
-To start using Achievements API, you need to:
-- Add a reference to Mira API either through a DLL or project reference.
-- Add a BepInDependency or SoftDependency on your plugin class like this:
-> `[BepInDependency(AchievementsAPIPlugin.Id)]`\
-> `[BepInDependency(AchievementsAPIPlugin.Id, BepInDependency.DependencyFlags.SoftDependency)]`
+There is a difference between:
 
-## Creating An Achievements Tab
-To have a tab for your achievements to be stored in, you need to create a class implementing `AchievementsTab`.\
-`AchievementsTab` has the following members that need to be implemented for your Achievements to function correctly:
-| Member                       | Required | Default                                | Description                                                                                                    |
-|------------------------------|-----|---------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `string Name { get; }`       | Yes | —                                           | The name of the Achievements Tab, displayed in UI.                                                             |
-| `bool IsSelectable { get; }` | No  | `true`                                      | Whether the tab should be selectable in the Achievements Menu. Handy for custom UI's or internal achievements. |
-| `Color GetTabColor()`        | No  | `new Color32(255, 255, 150, 255)`                            | A method which gets the color of the Achievements Menu background when switching to this tab. |
-| `string IconPath { get; }`   | No  | `"AchievementsAPI.Resources.ExampleIcon.png"`                                  | The path to the tab's icon, for if you don't have it as a Sprite.           |
-| `Sprite GetIcon()`           | No  | `SpriteTools.LoadSpriteFromPath(IconPath, Assembly.GetCallingAssembly(), 100)` | A method which gets the icon of the tab, used for its icon in the Achievements Menu. |
+> "Hey, I made an API. If you're interested, feel free to integrate it."
 
-### Example:
-```cs
-using AchievementsAPI.API;
-using UnityEngine;
+and repeatedly trying to get developers to add it to their projects, bringing it up over and over again, and effectively treating integration as something everyone else should be doing.
 
-namespace TownOfExtra.Achievements;
+This has been particularly noticeable in the AOU Discord, where the API is repeatedly brought up and promoted to other developers.
 
-public class ExampleAchievementsTab : AchievementsTab
-{
-    public override string Name => "Example";
-    public override bool IsSelectable => true;
-    
-    public override Color GetTabColor() => return new Color32(255, 255, 150, 255);
-    public override Sprite GetIcon() => "AchievementsAPI.Resources.ExampleIcon.png";
-}
-```
+Developers should be free to decide what dependencies and APIs they want to use in their projects.
 
-## Creating Achievements
-### Single Unlock Achievements:
-For each single unlock achievement (requires one thing to unlock, no progress) you need to create a `BaseAchievement`.
-`BaseAchievement` has the following members that need to be implemented for your Achievement to function correctly:
-| Member | Required | Default | Description |
-|---|---|---|---|
-| `string Name` | Yes | — | The achievement's name. |
-| `string Description` | Yes | — | The achievement's description. |
-| `string IconPath` | Yes* | — | The achievement's icon's path. *Use this constructor overload or provide a `Sprite Icon` directly. |
-| `Sprite Icon` | Yes* | — | The achievement's icon. *Use this constructor overload or provide an `IconPath` directly. |
-| `int Rarity` | No | `0` | The achievement's rarity: `0` = common (default), `1` = rare (blue), `2` = epic (purple), `3` = legendary (yellow). |
-| `bool Hidden` | No | `false` | Whether the achievement is hidden or not (hidden achievements get the default icon and have their name and description set to "Hidden Achievement" until unlocked). |
-| `bool HideRarity` | No | `true` | Whether to hide the achievement's rarity (if the achievement is hidden). |
-| `Assembly? Assembly` | No | `Assembly.GetCallingAssembly()` | The assembly associated with the achievement, used to generate its `Id`. |
-| `bool Unlocked { get; }` | No | `false` | Whether the achievement has been unlocked. |
-| `string Id { get; }` | No | `Assembly.GetName().Name + "_" + Name` | The achievement's unique identifier. |
-| `void Unlock(bool showOnUI = true, bool doStorageUpdate = true)` | No | — | Unlocks the achievement. `showOnUI` shows an unlock animation on the HUD. `doStorageUpdate` indicates whether to update storage again, used to make `CountAchievements` properly update. |
+If a project has a useful API, developers will adopt it when it makes sense for their project. Constantly asking people to integrate it does not make the API more useful, and it does not entitle the developer to expect every mod to support it.
 
-**Example:**
-```cs
-public BaseAchievement Welcome { get; set; } = new BaseAchievement(
-    "Welcome!", "Launch the game with Achievements API installed.", "AchievementsAPI.Resources.ExampleIcon.png"
-);
-```
+An API being functional does not mean every project needs to depend on it.
 
-### Count Unlock Achievements:
-For each count unlock achievement (requires progression to unlock) you need to create a `CountAchievement`.
-`CountAchievement` has the following members that need to be implemented for your Achievement to function correctly:
-| Member | Required | Default | Description |
-|---|---|---|---|
-| `int CurrentValue` | Yes | — | The current progress for this achievement. |
-| `int RequiredValue` | Yes | — | The required progress to unlock this achievement. |
-| `bool ProgressPersists` | No | `true` | Defines if the progress persists between games. |
-| `int Rarity` | No | `0` | The achievement's rarity: `0` = common (default), `1` = rare (blue), `2` = epic (purple), `3` = legendary (yellow). |
-| `bool Hidden` | No | `false` | Whether the achievement is hidden or not (hidden achievements get the default icon and have their name and description set to "Hidden Achievement" until unlocked). |
-| `bool HideRarity` | No | `true` | Whether to hide the achievement's rarity (if the achievement is hidden). |
-| `bool HideProgress` | No | `false` | Whether to hide the achievement's progress (if the achievement is hidden). |
-| `void Increment(int count, bool showOnUI = true)` | No | — | Increments the progress of this achievement by `count`. `showOnUI` shows an unlock animation on the HUD. |
-| `void SetValue(int value, bool showOnUI = true)` | No | — | Sets the progress of this achievement to `value`. `showOnUI` shows an unlock animation on the HUD. |
+## Hostile behavior in AOU
 
-**Example:**
-```cs
-public CountAchievement Taskmaster { get; set; } = new CountAchievement(
-    "Taskmaster", "Do 5 tasks", "AchievementsAPI.Resources.ExampleIcon.png", 0, 5
-);
-```
+The bigger concern is not the API itself, but the extremely hostile and toxic behavior that I have experienced from Shawarma in the AOU Discord.
 
-## Awarding Achievements
-To award an achievement, you need to find your achievements tab, via `AchievementsTabSingleton<ToexAchievementsTab>.Instance`.\
-Once you have this instance, you can use it to access your achievements:
+This does not appear to be limited to disagreements about whether someone wants to use Achievements API.
 
-### Unlocking `BaseAchievement`s
-To unlock a `BaseAchievement`, you can use `achievement.Unlock();`, for example:
-`AchievementsTabSingleton<ToexAchievementsTab>.Instance.Welcome.Unlock();`
+Their behavior can become hostile even when people are simply asking for help, asking questions, or participating in general conversation in AOU.
 
-### Progressing `CountAchievement`s
-To unlock a `CountAchievement`, you can use `achievement.Increment(Amount);` or `chievement.SetValue(Amount);`, for example:
-`AchievementsTabSingleton<ToexAchievementsTab>.Instance.Taskmaster.Increment(1);` would add 1 to the achievement progress\
-and\
-`AchievementsTabSingleton<ToexAchievementsTab>.Instance.Taskmaster.SetValue(10);` would immediately unlock the achievement
+Instead of responding normally to people asking for assistance or trying to understand something, conversations can quickly turn unnecessarily aggressive or confrontational.
 
-**Examples:**
-```cs
-// Unlocking BaseAchievements
-[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
-[HarmonyPatch(Priority.Last)]
-[HarmonyPostfix]
-public static void OnMainMenuAwakePostfix(MainMenuManager __instance)
-{
-    AchievementsTabSingleton<ExampleTab>.Instance.Welcome.Unlock();
-}
+People should not have to worry about being attacked or spoken to aggressively simply because they asked a question or started a conversation.
 
-// Progressing CountAchievements
-[HarmonyPostfix]
-[HarmonyPatch(nameof(PlayerControl.CompleteTask))]
-public static void PlayerCompleteTaskPostfix(PlayerControl __instance, uint idx)
-{
-    AchievementsTabSingleton<ExampleTab>.Instance.Taskmaster.Increment(1);
-}
-```
+A developer maintaining a public project will naturally interact with users and other developers. Not everyone will already understand how the project works, and not everyone will agree with every design decision.
+
+That is normal.
+
+If someone asks for help in AOU, the appropriate response should be to help them or politely explain why their question cannot be answered.
+
+If someone disagrees, explain the disagreement.
+
+If someone does not want to use the API, accept their decision.
+
+There is no reason for ordinary community interactions in AOU to turn into hostility.
+
+## Behavior towards developers
+
+This becomes even more problematic when the discussion involves other developers in AOU.
+
+A technical disagreement should remain a technical disagreement.
+
+If a developer says:
+
+> "We don't want to add this dependency."
+
+the appropriate response is to accept that decision.
+
+It should not turn into arguments, hostility, repeated pressure, or attempts to make the developer feel obligated to support the API.
+
+Open-source projects are allowed to have different architectures.
+
+Some projects may want an external achievement API. Some may already have their own achievement system. Some may simply not want another dependency.
+
+All of those are legitimate engineering decisions.
+
+## An API is not a requirement
+
+This is the part that seems to get lost in the constant promotion.
+
+Achievements API is a tool.
+
+It is not a requirement for Among Us mods.
+
+It is not something every developer is obligated to integrate.
+
+And developers should not have to repeatedly explain why they do or do not want to use it.
+
+If the API is good, let people discover it and choose to use it.
+
+Provide documentation.
+
+Maintain the API.
+
+Make integration easy.
+
+Fix issues when they appear.
+
+Let developers make their own decisions.
+
+That is how open-source projects normally grow.
+
+## The self-promotion
+
+There is also nothing inherently wrong with promoting your own project.
+
+Shawarma is completely entitled to say:
+
+> "I made Achievements API, check it out."
+
+The problem is when promotion becomes excessive and starts turning into repeated attempts to get the API integrated into as many projects as possible.
+
+In AOU, this can come across less like simply informing developers that the API exists and more like repeatedly trying to convince them that their projects should support it.
+
+A project's adoption should come from people actually finding it useful.
+
+If developers want it, they will use it.
+
+If they don't, repeatedly asking them will not change the technical reasons behind their decision.
+
+## The bigger problem
+
+What makes this situation particularly frustrating is that the project itself is functional.
+
+There is no need for the developer to behave this way.
+
+The API can stand on its own merits.
+
+If it is useful, developers will use it.
+
+If someone wants help using it, help them.
+
+If someone wants to integrate it, work with them.
+
+If someone does not want it, move on.
+
+If someone simply wants to have a normal conversation in AOU, there is no reason to respond with hostility.
+
+A functional project should not need to be forced into every other project, and its developer should not need to create hostility around it to get attention.
+
+## What I would expect instead
+
+The solution here is actually pretty simple.
+
+Keep developing the API.
+
+Keep the documentation clear.
+
+Keep the project stable.
+
+Make integration straightforward.
+
+Promote it normally.
+
+Help people who ask for help.
+
+And most importantly, respect the decisions of developers who choose not to use it.
+
+There is no reason for a functional API to be surrounded by unnecessary drama.
+
+People should be able to ask questions, request help, discuss projects, or simply participate in the AOU community without being met with hostile behavior.
+
+If Shawarma wants people to use Achievements API, the best way to achieve that is through the quality of the project and through constructive interactions with the developers and users they want to work with.
+
+## Project and developer
+
+For reference:
+
+- **Achievements API:** https://github.com/am-clonec/Achievements-API
+- **Developer:** Shawarma
+- **Discord:** https://discord.com/users/1188872730532139090
+
+The purpose of this issue is therefore **not** to claim that the API is broken or useless.
+
+It is about the behavior surrounding its promotion and the hostile way interactions with users and developers can be handled, particularly within the AOU Discord.
+
+A functional project deserves to be judged by its technical merits.
+
+Its developer should also be willing to interact with the community in a constructive and respectful manner.
