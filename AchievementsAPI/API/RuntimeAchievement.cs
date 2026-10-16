@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ public class RuntimeAchievement : BaseAchievement
     public Func<Sprite?>? MenuBgProvider;
 
     /// <summary>Lazily resolves the background sprite in the toast popup.</summary>
-    public Func<Sprite?>? ToastBgProvider;
+    public Func<Sprite>? ToastBgProvider;
 
     /// <summary>Lazily resolves the sub-icon in the achievements menu.</summary>
     public Func<Sprite?>? MenuSubIconProvider;
