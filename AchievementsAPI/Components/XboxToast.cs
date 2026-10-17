@@ -298,7 +298,7 @@ public static class XboxToast
         hintRect.anchoredPosition = new Vector2(6f, 15f);
         hintRect.sizeDelta = new Vector2(PillWidth, 26f);
 
-        var subtitle = CreateText(instance.TextRect, "Subtitle", request.Subtitle, 30f, Color.white, FontStyles.Bold);
+        var subtitle = CreateText(instance.TextRect, "Subtitle", request.Subtitle, 30f, MenuUi.TextColor, FontStyles.Bold);
         subtitle.overflowMode = TextOverflowModes.Overflow;
         var subtitleRect = subtitle.rectTransform;
         subtitleRect.anchorMin = subtitleRect.anchorMax = new Vector2(0f, 0.5f);

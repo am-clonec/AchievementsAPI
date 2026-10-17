@@ -81,6 +81,7 @@ Unlock with `achievement.Unlock()`; count achievements unlock on their own via `
 - [Tabs and categories](docs/tabs-and-categories.md): discovery, mod grouping, shared categories
 - [Localization](docs/localization.md): `StringNames` and translation packs
 - [Game events](docs/game-events.md): reset triggers, progress persistence, deferred toasts
+- [Integrating with the API](docs/integration.md): reading achievements, settings, theming
 - [Menu and toasts](docs/menu-and-toasts.md): the player UI and its configuration
 - [Storage](docs/storage.md): save file format and encryption
 - [Building and internals](docs/building.md): project layout, CI, the developer plugin

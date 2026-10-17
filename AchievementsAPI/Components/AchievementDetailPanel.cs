@@ -60,7 +60,7 @@ public static class AchievementDetailPanel
         // Name
         var name = CreateText(rect, "Name",
             revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement),
-            38f, Color.white, FontStyles.Bold);
+            38f, TextColor, FontStyles.Bold);
         name.enableWordWrapping = false;
         name.overflowMode = TextOverflowModes.Ellipsis;
         StretchTop(name.rectTransform, x0, -52f, 48f);
@@ -81,20 +81,20 @@ public static class AchievementDetailPanel
         {
             var rarityColor = achievement.Rarity > 0
                 ? RarityColor(achievement.Rarity)
-                : (Color) new Color32(230, 230, 230, 255);
+                : (Color) CommonLabelColor;
             AddChip(row, null, RarityName(achievement.Rarity), rarityColor);
         }
         if (category != null)
         {
             var catIcon = category.GetIcon();
             AddChip(row, catIcon != null ? ToastSprites.TrimTransparent(catIcon) : null,
-                AchievementsStrings.GetText(category.Name), Color.white);
+                AchievementsStrings.GetText(category.Name), TextColor);
         }
         if (tab != null && multipleMods)
         {
             var modIcon = tab.ModIcon;
             AddChip(row, modIcon != null ? ToastSprites.TrimTransparent(modIcon) : null,
-                tab.ModName, Color.white);
+                tab.ModName, TextColor);
         }
 
         // Description
@@ -123,7 +123,7 @@ public static class AchievementDetailPanel
 
         var scoreTile = CreateTile(tiles, AchievementsStrings.GetText(AchievementsStrings.SkeldPoints), out _);
         // Base points with the xN badge, same as the list rows
-        var scoreValue = AddTileValue(scoreTile.transform, $"{achievement.BasePoints}", Color.white);
+        var scoreValue = AddTileValue(scoreTile.transform, $"{achievement.BasePoints}", TextColor);
         if (achievement.PointsMultiplier > 1)
         {
             scoreValue.ForceMeshUpdate();
@@ -143,7 +143,7 @@ public static class AchievementDetailPanel
         {
             var rarityColor = achievement.Rarity > 0
                 ? RarityColor(achievement.Rarity)
-                : (Color) new Color32(230, 230, 230, 255);
+                : (Color) CommonLabelColor;
             AddTileValue(rarityTile.transform, RarityName(achievement.Rarity), rarityColor);
         }
         else
@@ -165,7 +165,7 @@ public static class AchievementDetailPanel
         else if (inProgress)
         {
             statusValue = AchievementsStrings.GetText(AchievementsStrings.FilterInProgress);
-            statusColor = Color.white;
+            statusColor = TextColor;
         }
         else
         {

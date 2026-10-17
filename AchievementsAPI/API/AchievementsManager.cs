@@ -110,6 +110,83 @@ public static class AchievementsManager
         return null;
     }
 
+    /// <summary>Raised after an achievement transitions from locked to unlocked.</summary>
+    public static event Action<BaseAchievement>? AchievementUnlocked;
+    /// <summary>Raised after a <see cref="CountAchievement"/>'s progress value changes (including the step that unlocks it).</summary>
+    public static event Action<CountAchievement>? AchievementProgressed;
+    /// <summary>Raised after an achievement is reset to locked (also once per achievement during <see cref="AchievementStorage.ResetAll"/>).</summary>
+    public static event Action<BaseAchievement>? AchievementReset;
+    internal static void RaiseUnlocked(BaseAchievement a) => AchievementUnlocked?.Invoke(a);
+    internal static void RaiseProgressed(CountAchievement a) => AchievementProgressed?.Invoke(a);
+    internal static void RaiseReset(BaseAchievement a) => AchievementReset?.Invoke(a);
+
+    /// <summary>Builds a display-ready snapshot of <paramref name="achievement"/>.</summary>
+    public static AchievementInfo GetInfo(AchievementsTab tab, BaseAchievement achievement)
+    {
+        var masked = achievement.Hidden && !achievement.Unlocked;
+        var count = achievement as CountAchievement;
+        var hideProgress = masked && count is { HideProgress: true };
+        return new AchievementInfo(
+            achievement,
+            tab,
+            ResolveCategory(tab, achievement),
+            tab.ModName,
+            achievement.Id,
+            masked ? AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement) : achievement.GetName(),
+            masked ? AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement) : achievement.GetDescription(),
+            masked
+                ? SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.ExampleIcon.png", typeof(AchievementsManager).Assembly, 100)
+                : achievement.Icon,
+            achievement.Rarity,
+            !masked || !achievement.HideRarity,
+            achievement.Points,
+            achievement.Hidden,
+            achievement.Unlocked,
+            achievement.UnlockedAt,
+            count != null && !hideProgress ? count.CurrentValue : null,
+            count != null && !hideProgress ? count.RequiredValue : null);
+    }
+
+    /// <summary>Finds the achievement by id and snapshots it, or null if not registered.</summary>
+    public static AchievementInfo? GetInfo(string id)
+    {
+        var found = FindAchievement(id);
+        return found == null ? null : GetInfo(found.Value.Tab, found.Value.Achievement);
+    }
+
+    /// <summary>
+    /// Snapshots every registered achievement. Tabs with <see cref="AchievementsTab.IsSelectable"/> false
+    /// (internal/developer tabs) are skipped unless <paramref name="includeUnselectable"/> is set.
+    /// </summary>
+    public static List<AchievementInfo> GetAllAchievements(bool includeUnselectable = false)
+    {
+        var infos = new List<AchievementInfo>();
+        foreach (var tab in Tabs)
+        {
+            if (!includeUnselectable && !tab.IsSelectable) continue;
+            foreach (var achievement in tab.GetAchievements()) infos.Add(GetInfo(tab, achievement));
+        }
+        return infos;
+    }
+
+    /// <summary>Snapshots the achievements shown under one category id.</summary>
+    public static List<AchievementInfo> GetAchievements(string categoryId, bool includeUnselectable = false)
+        => GetAllAchievements(includeUnselectable).Where(i => i.Category.Id == categoryId).ToList();
+
+    /// <summary>Totals over <paramref name="achievements"/> (defaults to every selectable achievement).</summary>
+    public static AchievementStats GetStats(IEnumerable<AchievementInfo>? achievements = null)
+    {
+        var all = (achievements ?? GetAllAchievements()).ToList();
+        var byRarity = new Dictionary<int, (int Unlocked, int Total)>();
+        for (var rarity = 0; rarity <= 3; rarity++)
+        {
+            var items = all.Where(a => a.Rarity == rarity).ToList();
+            if (items.Count > 0) byRarity[rarity] = (items.Count(a => a.Unlocked), items.Count);
+        }
+        return new AchievementStats(all.Count, all.Count(a => a.Unlocked),
+            all.Where(a => a.Unlocked).Sum(a => a.Points), all.Sum(a => a.Points), byRarity);
+    }
+
     public static void Initialize()
     {
         RegisterTab(new ExampleTab());

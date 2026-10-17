@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using AchievementsAPI.API;
 using Reactor.Utilities.Extensions;
 using UnityEngine;
 
@@ -100,7 +101,7 @@ public static class ToastSprites
     /// It is 9-sliced with a 48px border so the corners and frame retain their
     /// proportions when stretched, for the menu window.
     /// </summary>
-    public static Sprite WikiPanel => _wikiPanel ??= CreateWikiPanel();
+    public static Sprite WikiPanel => AchievementsTheme.Current.MenuBackground ?? (_wikiPanel ??= CreateWikiPanel());
 
     /// <summary>
     /// <see cref="OutlineBox"/> with corner radius 14, for pill tabs and buttons.
@@ -110,7 +111,13 @@ public static class ToastSprites
     /// <summary>
     /// A solid #3D4040 rounded box with no outline, for buttons, pills and stat boxes.
     /// </summary>
-    public static Sprite ButtonBox => _buttonBox ??= CreateSolidRoundedBox(14f, new Color32(61, 64, 64, 255), "AchMenuButtonBox");
+    public static Sprite ButtonBox => _buttonBox ??= CreateSolidRoundedBox(14f, AchievementsTheme.Current.Surface, "AchMenuButtonBox");
+
+    /// <summary>
+    /// Drops the sprite caches whose pixels are baked from the active theme
+    /// (called when <see cref="AchievementsTheme.Current"/> is reassigned).
+    /// </summary>
+    internal static void InvalidateThemed() { _buttonBox = null; _card = null; }
 
     /// <summary>
     /// <see cref="PanelBox"/> with corner radius 14.
@@ -249,7 +256,7 @@ public static class ToastSprites
                 : Color.Lerp(new Color32(69, 74, 79, 255), new Color32(112, 114, 118, 255), y / (size - 1f));
             else if (inset < 13f * s) color = rimOnly ? Color.white : new Color32(160, 172, 181, 255);
             else if (inset < 16f * s) color = rimOnly ? new Color(0f, 0f, 0f, 0f) : new Color32(0, 0, 0, 255);
-            else color = rimOnly ? new Color(0f, 0f, 0f, 0f) : new Color32(41, 40, 41, 255);
+            else color = rimOnly ? new Color(0f, 0f, 0f, 0f) : AchievementsTheme.Current.CardFace;
             color.a *= alpha;
             return color;
         }, name, size);

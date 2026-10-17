@@ -75,6 +75,7 @@ public class CountAchievement : BaseAchievement
         Unlocked = false;
         CurrentValue = 0;
         AchievementStorage.AchievementDataReset(this, 0, false, save);
+        AchievementsManager.RaiseReset(this);
     }
     /// <summary>
     /// Method to increment the progress of this achievement.
@@ -98,11 +99,12 @@ public class CountAchievement : BaseAchievement
             Unlock(false, false);
             AchievementStorage.AchievementStorageUpdate(this, value, true);
             if (showOnUI && !Hidden) AchievementToastQueue.Enqueue(this, true);
+            AchievementsManager.RaiseProgressed(this);
             return;
         }
         if (showOnUI && !Unlocked) AchievementToastQueue.Enqueue(this, false);
         AchievementStorage.AchievementStorageUpdate(this, value, Unlocked);
-        
+        AchievementsManager.RaiseProgressed(this);
     }
 }
 

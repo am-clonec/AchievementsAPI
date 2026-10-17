@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +18,17 @@ namespace AchievementsAPI;
 /// </summary>
 public static class MenuUi
 {
-    internal static readonly Color32 AccentColor = new(74, 127, 121, 255);   // AU teal
-    internal static readonly Color32 AccentHover = new(126, 203, 195, 255);
-    internal static readonly Color32 PressedColor = new(56, 96, 92, 255);
-    internal static readonly Color32 TrackOffColor = new(112, 112, 112, 255);
-    internal static readonly Color32 ValueColor = new(190, 190, 190, 255);
-    internal static readonly Color32 RimColor = new(112, 114, 118, 255);     // neutral ring for common/no-rarity
-    internal static readonly Color32 DangerColor = new(196, 64, 64, 255);
-    internal static readonly Color32 DangerHover = new(232, 96, 96, 255);
-    internal static readonly Color32 DangerPressed = new(140, 44, 44, 255);
+    internal static Color32 AccentColor => AchievementsTheme.Current.Accent;   // AU teal
+    internal static Color32 AccentHover => AchievementsTheme.Current.AccentHover;
+    internal static Color32 PressedColor => AchievementsTheme.Current.AccentPressed;
+    internal static Color32 TrackOffColor => AchievementsTheme.Current.Track;
+    internal static Color32 ValueColor => AchievementsTheme.Current.SecondaryText;
+    internal static Color32 TextColor => AchievementsTheme.Current.PrimaryText;
+    internal static Color32 RimColor => AchievementsTheme.Current.Rim;         // neutral ring for common/no-rarity
+    internal static Color32 CommonLabelColor => AchievementsTheme.Current.CommonLabel;
+    internal static Color32 DangerColor => AchievementsTheme.Current.Danger;
+    internal static Color32 DangerHover => AchievementsTheme.Current.DangerHover;
+    internal static Color32 DangerPressed => AchievementsTheme.Current.DangerPressed;
 
     internal static Image CreateImage(Transform parent, string name, Sprite? sprite, Color color)
     {
@@ -42,6 +43,7 @@ public static class MenuUi
 
     internal static void ApplyGameFont(TextMeshProUGUI tmp)
     {
+        if (AchievementsTheme.Current.Font is { } f) { tmp.font = f; return; }
         if (DisconnectPopup.Instance && DisconnectPopup.Instance._textArea)
         {
             var source = DisconnectPopup.Instance._textArea;
@@ -126,7 +128,7 @@ public static class MenuUi
         var ringRect = ring.rectTransform;
         ringRect.sizeDelta = new Vector2(size, size);
 
-        var face = CreateImage(ringRect, "Inner", ToastSprites.Circle, new Color32(41, 40, 41, 255));
+        var face = CreateImage(ringRect, "Inner", ToastSprites.Circle, AchievementsTheme.Current.CardFace);
         face.raycastTarget = false;
         inner = face.rectTransform;
         inner.anchorMin = Vector2.zero;
@@ -393,7 +395,7 @@ public static class MenuUi
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(180f, 48f);
 
-        var text = CreateText(rect, "Label", label, 22f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
+        var text = CreateText(rect, "Label", label, 22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
         var textRect = text.rectTransform;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
@@ -507,16 +509,7 @@ public static class MenuUi
         target.SetAsLastSibling();
     }
 
-    internal static Color RarityColor(int rarity)
-    {
-        return rarity switch
-        {
-            1 => new Color32(104, 172, 212, 255),
-            2 => new Color32(158, 112, 214, 255),
-            3 => new Color32(214, 184, 92, 255),
-            _ => RimColor
-        };
-    }
+    internal static Color RarityColor(int rarity) => AchievementsTheme.Current.RarityColor(rarity);
 
     // Progress-bar fills: the rarity color, but the teal AccentHover for
     // common so the fill does not sit gray-on-gray against the ring/track.

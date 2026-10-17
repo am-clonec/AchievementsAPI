@@ -27,7 +27,7 @@ namespace AchievementsAPI
         public OptionsMenuBehaviour OptionsMenuBehaviour;
         public string FocusAchievementId;
 
-        private static readonly Color32 SelectedColor = AccentHover;
+        private static Color32 SelectedColor => AccentHover;
         private static readonly Color32 HoverColor = new(200, 200, 200, 255);
         private static readonly Color32 PressedTint = new(150, 150, 150, 255);
 
@@ -227,7 +227,7 @@ namespace AchievementsAPI
             iconRect.sizeDelta = new Vector2(38f, 38f);
 
             _title = CreateText(_panel, "Title", AchievementsStrings.GetText(AchievementsStrings.MenuTitle),
-                38f, Color.white, FontStyles.Bold, TextAlignmentOptions.Left);
+                38f, TextColor, FontStyles.Bold, TextAlignmentOptions.Left);
             _title.overflowMode = TextOverflowModes.Overflow;
             var titleRect = _title.rectTransform;
             titleRect.anchorMin = titleRect.anchorMax = new Vector2(0f, 1f);
@@ -253,7 +253,7 @@ namespace AchievementsAPI
                 pillRect.pivot = new Vector2(0.5f, 0.5f);
                 pillRect.anchoredPosition = new Vector2((i - 1.5f) * 212f, 0f);
                 pillRect.sizeDelta = new Vector2(200f, 50f);
-                var label = CreateText(pillRect, "Label", names[i], 22f, Color.white,
+                var label = CreateText(pillRect, "Label", names[i], 22f, TextColor,
                     FontStyles.Bold, TextAlignmentOptions.Center);
                 label.rectTransform.anchorMin = Vector2.zero;
                 label.rectTransform.anchorMax = Vector2.one;
@@ -408,7 +408,7 @@ namespace AchievementsAPI
 
                 _modFilterLabel = CreateText(_modFilterRect, "Label",
                     AchievementsStrings.GetText(AchievementsStrings.FilterAllMods),
-                    20f, Color.white, FontStyles.Bold);
+                    20f, TextColor, FontStyles.Bold);
                 var modLabelRect = _modFilterLabel.rectTransform;
                 modLabelRect.anchorMin = Vector2.zero;
                 modLabelRect.anchorMax = Vector2.one;
@@ -561,7 +561,7 @@ namespace AchievementsAPI
             gearRect.anchoredPosition = new Vector2(36f, 0f);
             gearRect.sizeDelta = new Vector2(28f, 28f);
             var settingsLabel = CreateText(settingsRect, "Label", AchievementsStrings.GetText(AchievementsStrings.Settings),
-                22f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
+                22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
             settingsLabel.rectTransform.anchorMin = Vector2.zero;
             settingsLabel.rectTransform.anchorMax = Vector2.one;
             settingsLabel.rectTransform.offsetMin = new Vector2(34f, 0f);
@@ -693,7 +693,7 @@ namespace AchievementsAPI
             rect.anchoredPosition = anchoredPosition;
             rect.sizeDelta = new Vector2(44f, 40f);
 
-            var text = CreateText(rect, "Label", label, 22f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
+            var text = CreateText(rect, "Label", label, 22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
             text.rectTransform.anchorMin = Vector2.zero;
             text.rectTransform.anchorMax = Vector2.one;
             text.rectTransform.offsetMin = Vector2.zero;
@@ -793,7 +793,7 @@ namespace AchievementsAPI
             pointsHlg.childForceExpandHeight = false;
             // TMP's Ellipsis mode drops a single line taller than its rect,
             // which hid the number entirely; Overflow keeps it visible
-            var earnedText = CreateText(pointsRow, "Earned", earned.ToString(), 36f, Color.white,
+            var earnedText = CreateText(pointsRow, "Earned", earned.ToString(), 36f, TextColor,
                 FontStyles.Bold, TextAlignmentOptions.BottomLeft);
             earnedText.overflowMode = TextOverflowModes.Overflow;
             var totalText = CreateText(pointsRow, "Total", $"/ {total}", 22f, ValueColor,
@@ -802,7 +802,7 @@ namespace AchievementsAPI
             totalText.margin = new Vector4(0f, 0f, 0f, 6f);
 
             // Row 2: completed count with an animated bar
-            var completed = CreateText(_statsCard, "Completed", AchievementsStrings.GetText(AchievementsStrings.FilterCompleted), 20f, Color.white);
+            var completed = CreateText(_statsCard, "Completed", AchievementsStrings.GetText(AchievementsStrings.FilterCompleted), 20f, TextColor);
             var completedRect = completed.rectTransform;
             completedRect.anchorMin = new Vector2(0f, 1f);
             completedRect.anchorMax = new Vector2(1f, 1f);
@@ -838,11 +838,11 @@ namespace AchievementsAPI
             {
                 var x = 20f + (i % 2) * 170f;
                 var chipY = -168f - (i / 2) * 30f;
-                var rarityColor = chips[i].rarity == 0 ? (Color) new Color32(230, 230, 230, 255) : RarityColor(chips[i].rarity);
+                var rarityColor = chips[i].rarity == 0 ? (Color) CommonLabelColor : RarityColor(chips[i].rarity);
                 var hex = ColorUtility.ToHtmlStringRGB(rarityColor);
                 var chip = CreateText(_statsCard, "RarityChip",
-                    $"<b><color=#{hex}>{RarityName(chips[i].rarity)}</color></b> <color=#BEBEBE>{chips[i].done}/{chips[i].total}</color>",
-                    18f, Color.white);
+                    $"<b><color=#{hex}>{RarityName(chips[i].rarity)}</color></b> <color=#{ColorUtility.ToHtmlStringRGB(ValueColor)}>{chips[i].done}/{chips[i].total}</color>",
+                    18f, TextColor);
                 chip.overflowMode = TextOverflowModes.Overflow;
                 var chipRect = chip.rectTransform;
                 chipRect.anchorMin = chipRect.anchorMax = new Vector2(0f, 1f);
@@ -920,7 +920,7 @@ namespace AchievementsAPI
             iconRect.sizeDelta = new Vector2(32f, 32f);
             var textX = 56f;
 
-            var label = CreateText(rect, "Label", name, 20f, Color.white, FontStyles.Bold);
+            var label = CreateText(rect, "Label", name, 20f, TextColor, FontStyles.Bold);
             var labelRect = label.rectTransform;
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
@@ -975,7 +975,7 @@ namespace AchievementsAPI
             iconRect.anchoredPosition = new Vector2(24f, 0f);
             iconRect.sizeDelta = new Vector2(24f, 24f);
 
-            var label = CreateText(rect, "Label", name, 20f, Color.white, FontStyles.Bold);
+            var label = CreateText(rect, "Label", name, 20f, TextColor, FontStyles.Bold);
             var labelRect = label.rectTransform;
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
@@ -1135,7 +1135,7 @@ namespace AchievementsAPI
             for (var i = 0; i < _filterTabs.Count; i++)
             {
                 _filterTabs[i].label.text =
-                    $"{names[i]} <color=#BEBEBE>({filterCounts[i]})</color>";
+                    $"{names[i]} <color=#{ColorUtility.ToHtmlStringRGB(ValueColor)}>({filterCounts[i]})</color>";
                 _filterTabs[i].button.interactable = i != _filter;
             }
 
@@ -1346,7 +1346,7 @@ namespace AchievementsAPI
             sub.gameObject.SetActive(false);
             row.SubIcon = sub;
 
-            var name = CreateText(rowRect, "Name", "", 26f, Color.white, FontStyles.Bold);
+            var name = CreateText(rowRect, "Name", "", 26f, TextColor, FontStyles.Bold);
             name.overflowMode = TextOverflowModes.Overflow;
             var nameRect = name.rectTransform;
             nameRect.anchorMin = new Vector2(0f, 1f);
@@ -1397,7 +1397,7 @@ namespace AchievementsAPI
             pillEmblem.pivot = new Vector2(0.5f, 0.5f);
             pillEmblem.anchoredPosition = new Vector2(20f, 0f);
 
-            var pillText = CreateText(pillRect, "Label", "", 22f, Color.white, FontStyles.Bold,
+            var pillText = CreateText(pillRect, "Label", "", 22f, TextColor, FontStyles.Bold,
                 TextAlignmentOptions.Center);
             var pillTextRect = pillText.rectTransform;
             pillTextRect.anchorMin = Vector2.zero;
