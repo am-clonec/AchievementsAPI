@@ -117,7 +117,12 @@ public static class ToastSprites
     /// Drops the sprite caches whose pixels are baked from the active theme
     /// (called when <see cref="AchievementsTheme.Current"/> is reassigned).
     /// </summary>
-    internal static void InvalidateThemed() { _buttonBox = null; _card = null; }
+    internal static void InvalidateThemed()
+    {
+        _buttonBox = null;
+        _card = null;
+        // Also clear any theme-specific sprite caches
+    }
 
     /// <summary>
     /// <see cref="PanelBox"/> with corner radius 14.

@@ -66,7 +66,8 @@ public static class AchievementsSettingsPanel
 
     private static RectTransform CreateRowStrip(Transform panel, float topY)
     {
-        var strip = CreateImage(panel, "Row", ToastSprites.ButtonBox, Color.white);
+        var theme = AchievementsTheme.Current;
+        var strip = CreateImage(panel, "Row", theme.ButtonBackground ?? ToastSprites.ButtonBox, Color.white);
         strip.type = Image.Type.Sliced;
         var rect = strip.rectTransform;
         rect.anchorMin = new Vector2(0f, 1f);
@@ -79,7 +80,8 @@ public static class AchievementsSettingsPanel
 
     private static void CreateRowLabel(Transform strip, string text)
     {
-        var label = CreateText(strip, "Label", text, 24f, TextColor);
+        var theme = AchievementsTheme.Current;
+        var label = CreateText(strip, "Label", text, theme.HeaderFontSize, TextColor);
         var rect = label.rectTransform;
         rect.anchorMin = rect.anchorMax = new Vector2(0f, 0.5f);
         rect.pivot = new Vector2(0f, 0.5f);

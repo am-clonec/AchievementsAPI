@@ -1,4 +1,5 @@
 using System.Collections;
+using AchievementsAPI.API;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using TMPro;
@@ -53,18 +54,19 @@ public static class AchievementsConfirmDialog
         scrimButton.navigation = new Navigation { mode = Navigation.Mode.None };
         scrimButton.onClick.AddListener((UnityAction)(() => Close()));
 
+        var theme = AchievementsTheme.Current;
         var card = CreateCard(rootRect, "Card");
         var cardRect = card.rectTransform;
         cardRect.anchorMin = cardRect.anchorMax = new Vector2(0.5f, 0.5f);
         cardRect.pivot = new Vector2(0.5f, 0.5f);
         cardRect.anchoredPosition = Vector2.zero;
-        cardRect.sizeDelta = new Vector2(680f, 340f);
+        cardRect.sizeDelta = new Vector2(theme.DialogWidth, theme.DialogHeight);
         cardRect.localScale = new Vector3(StartScale, StartScale, 1f);
         var group = card.gameObject.AddComponent<CanvasGroup>();
         group.alpha = 0f;
         Coroutines.Start(CoPopIn(cardRect, group, scrim));
 
-        var titleText = CreateText(cardRect, "Title", title, 34f, TextColor,
+        var titleText = CreateText(cardRect, "Title", title, theme.TitleFontSize, TextColor,
             FontStyles.Bold, TextAlignmentOptions.Center);
         titleText.overflowMode = TextOverflowModes.Overflow;
         var titleRect = titleText.rectTransform;
@@ -74,7 +76,7 @@ public static class AchievementsConfirmDialog
         titleRect.anchoredPosition = new Vector2(0f, -36f);
         titleRect.sizeDelta = new Vector2(-80f, 48f);
 
-        var bodyText = CreateText(cardRect, "Body", body, 22f, ValueColor,
+        var bodyText = CreateText(cardRect, "Body", body, theme.BodyFontSize, ValueColor,
             FontStyles.Normal, TextAlignmentOptions.Center);
         bodyText.enableWordWrapping = true;
         var bodyRect = bodyText.rectTransform;

@@ -178,6 +178,7 @@ namespace AchievementsAPI
         // achievement list scroll. Everything below the panel is anchor-based.
         private void BuildChrome()
         {
+            var theme = AchievementsTheme.Current;
             var scrim = CreateImage(transform, "Scrim", null, new Color(0f, 0f, 0f, 0f));
             var scrimRect = scrim.rectTransform;
             scrimRect.anchorMin = Vector2.zero;
@@ -185,20 +186,20 @@ namespace AchievementsAPI
             scrimRect.offsetMin = Vector2.zero;
             scrimRect.offsetMax = Vector2.zero;
 
-            var panelImg = CreateImage(transform, "Panel", ToastSprites.WikiPanel, Color.white);
+            var panelImg = CreateImage(transform, "Panel", theme.MenuBackground ?? ToastSprites.WikiPanel, Color.white);
             panelImg.type = Image.Type.Sliced;
             panelImg.color = new Color(0.68f, 0.68f, 0.68f, 1f);
             _panel = panelImg.rectTransform;
             _panel.anchorMin = _panel.anchorMax = new Vector2(0.5f, 0.5f);
-            _panel.sizeDelta = new Vector2(1560f, 960f);
-            _panel.localScale = new Vector3(0.92f, 0.92f, 1f);
+            _panel.sizeDelta = new Vector2(theme.MenuWidth, theme.MenuHeight);
+            _panel.localScale = new Vector3(theme.MenuScale, theme.MenuScale, 1f);
             var group = _panel.gameObject.AddComponent<CanvasGroup>();
             group.alpha = 0f;
             Coroutines.Start(CoPopIn(_panel, group, scrim));
 
             // Top-left X like the game's options window
-            var closeImg = CreateImage(_panel, "Close", ToastSprites.CloseX, Color.white);
-            closeImg.sprite = CloseButtonSprite ?? ToastSprites.CloseX;
+            var closeImg = CreateImage(_panel, "Close", theme.CloseButtonIcon ?? ToastSprites.CloseX, Color.white);
+            closeImg.sprite = CloseButtonSprite ?? (theme.CloseButtonIcon ?? ToastSprites.CloseX);
             var closeRect = closeImg.rectTransform;
             closeRect.anchorMin = closeRect.anchorMax = new Vector2(0f, 1f);
             closeRect.pivot = new Vector2(0.5f, 0.5f);
@@ -227,7 +228,7 @@ namespace AchievementsAPI
             iconRect.sizeDelta = new Vector2(38f, 38f);
 
             _title = CreateText(_panel, "Title", AchievementsStrings.GetText(AchievementsStrings.MenuTitle),
-                38f, TextColor, FontStyles.Bold, TextAlignmentOptions.Left);
+                theme.TitleFontSize, TextColor, FontStyles.Bold, TextAlignmentOptions.Left);
             _title.overflowMode = TextOverflowModes.Overflow;
             var titleRect = _title.rectTransform;
             titleRect.anchorMin = titleRect.anchorMax = new Vector2(0f, 1f);
@@ -294,7 +295,7 @@ namespace AchievementsAPI
             searchBoxRect.anchoredPosition = Vector2.zero;
             searchBoxRect.sizeDelta = new Vector2(50f, 50f);
 
-            _searchIcon = CreateImage(searchBoxRect, "SearchIcon", SearchGlyph, Color.white);
+            _searchIcon = CreateImage(searchBoxRect, "SearchIcon", theme.SearchIcon ?? SearchGlyph, Color.white);
             _searchIcon.preserveAspect = true;
             _searchIcon.raycastTarget = false;
             // Tints the PNG's flat grey box to exactly the ButtonBox colour so its
@@ -1056,7 +1057,8 @@ namespace AchievementsAPI
         // The icon doubles as the clear button once there is text.
         private void UpdateSearchIcon()
         {
-            _searchIcon.sprite = SearchText.Length > 0 ? SearchClearGlyph : SearchGlyph;
+            var theme = AchievementsTheme.Current;
+            _searchIcon.sprite = SearchText.Length > 0 ? (theme.SearchClearIcon ?? SearchClearGlyph) : (theme.SearchIcon ?? SearchGlyph);
         }
 
         private void QueueSearchRefresh()

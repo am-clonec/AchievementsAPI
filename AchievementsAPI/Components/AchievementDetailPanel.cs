@@ -17,7 +17,7 @@ namespace AchievementsAPI;
 /// </summary>
 public static class AchievementDetailPanel
 {
-    private const float P = 48f;
+    private static float P => AchievementsTheme.Current.MenuPadding;
 
     public static GameObject Create(Transform parent, BaseAchievement achievement, System.Action onBack)
     {
@@ -58,17 +58,18 @@ public static class AchievementDetailPanel
         iconRect.sizeDelta = new Vector2(150f, 150f);
 
         // Name
+        var theme = AchievementsTheme.Current;
         var name = CreateText(rect, "Name",
             revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement),
-            38f, TextColor, FontStyles.Bold);
+            theme.TitleFontSize, TextColor, FontStyles.Bold);
         name.enableWordWrapping = false;
         name.overflowMode = TextOverflowModes.Ellipsis;
-        StretchTop(name.rectTransform, x0, -52f, 48f);
+        StretchTop(name.rectTransform, x0, -52f, 48f, -P);
 
         // Chip row: rarity, category, mod
         var row = new GameObject("ChipRow").AddComponent<RectTransform>();
         row.SetParent(rect, false);
-        StretchTop(row, x0, -108f, 32f);
+        StretchTop(row, x0, -108f, 32f, -P);
         var rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
         rowLayout.spacing = 10f;
         rowLayout.childAlignment = TextAnchor.MiddleLeft;
@@ -100,7 +101,7 @@ public static class AchievementDetailPanel
         // Description
         var desc = CreateText(rect, "Description",
             revealed ? achievement.GetDescription() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement),
-            24f, ValueColor, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            theme.HeaderFontSize, ValueColor, FontStyles.Normal, TextAlignmentOptions.TopLeft);
         desc.enableWordWrapping = true;
         desc.overflowMode = TextOverflowModes.Ellipsis;
         var descRect = desc.rectTransform;
@@ -113,7 +114,7 @@ public static class AchievementDetailPanel
         // STAT TILES
         var tiles = new GameObject("Tiles").AddComponent<RectTransform>();
         tiles.SetParent(rect, false);
-        StretchTop(tiles, P, -302f, 120f);
+        StretchTop(tiles, P, -302f, 120f, -P);
         var tilesLayout = tiles.gameObject.AddComponent<HorizontalLayoutGroup>();
         tilesLayout.spacing = 20f;
         tilesLayout.childControlWidth = true;
@@ -185,7 +186,7 @@ public static class AchievementDetailPanel
             card.type = Image.Type.Sliced;
             card.raycastTarget = false;
             var cardRect = card.rectTransform;
-            StretchTop(cardRect, P, -450f, 100f);
+            StretchTop(cardRect, P, -450f, 100f, -P);
 
             var caption = CreateText(cardRect, "Caption",
                 AchievementsStrings.GetText(AchievementsStrings.DetailProgress),
@@ -278,12 +279,13 @@ public static class AchievementDetailPanel
     // A ButtonBox stat tile: caption in the top-left corner; returns the tile image.
     private static Image CreateTile(Transform parent, string caption, out RectTransform rect)
     {
-        var tile = CreateImage(parent, "Tile", ToastSprites.ButtonBox, Color.white);
+        var theme = AchievementsTheme.Current;
+        var tile = CreateImage(parent, "Tile", theme.ButtonBackground ?? ToastSprites.ButtonBox, Color.white);
         tile.type = Image.Type.Sliced;
         tile.raycastTarget = false;
         rect = tile.rectTransform;
 
-        var captionText = CreateText(rect, "Caption", caption, 16f, ValueColor, FontStyles.Bold);
+        var captionText = CreateText(rect, "Caption", caption, theme.CaptionFontSize, ValueColor, FontStyles.Bold);
         StretchTop(captionText.rectTransform, 18f, -14f, 22f, -18f);
         return tile;
     }
@@ -291,7 +293,8 @@ public static class AchievementDetailPanel
     // Large white value text inside a tile.
     private static TextMeshProUGUI AddTileValue(Transform tile, string text, Color color)
     {
-        var value = CreateText(tile, "Value", text, 32f, color, FontStyles.Bold);
+        var theme = AchievementsTheme.Current;
+        var value = CreateText(tile, "Value", text, theme.HeaderFontSize, color, FontStyles.Bold);
         value.overflowMode = TextOverflowModes.Overflow;
         StretchTop(value.rectTransform, 18f, -42f, 44f, -18f);
         return value;
@@ -300,19 +303,27 @@ public static class AchievementDetailPanel
     // Small secondary line near the bottom of a tile.
     private static void AddTileSubline(Transform tile, string text)
     {
-        var subline = CreateText(tile, "Subline", text, 16f, ValueColor);
+        var theme = AchievementsTheme.Current;
+        var subline = CreateText(tile, "Subline", text, theme.CaptionFontSize, ValueColor);
         subline.overflowMode = TextOverflowModes.Overflow;
         StretchTop(subline.rectTransform, 18f, -88f, 22f, -18f);
     }
 
     // Stretches a rect horizontally from `left` to `right` (offsets), top edge at
     // `top` (negative from the parent's top), `height` tall.
-    private static void StretchTop(RectTransform rect, float left, float top, float height, float right = -P)
+    private static void StretchTop(RectTransform rect, float left, float top, float height, float right)
     {
         rect.anchorMin = new Vector2(0f, 1f);
         rect.anchorMax = new Vector2(1f, 1f);
         rect.pivot = new Vector2(0f, 1f);
         rect.offsetMin = new Vector2(left, top - height);
         rect.offsetMax = new Vector2(right, top);
+    }
+
+    // Stretches a rect horizontally from `left` to the right padding, top edge at
+    // `top` (negative from the parent's top), `height` tall.
+    private static void StretchTop(RectTransform rect, float left, float top, float height)
+    {
+        StretchTop(rect, left, top, height, -P);
     }
 }

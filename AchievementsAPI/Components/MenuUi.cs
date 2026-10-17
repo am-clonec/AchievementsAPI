@@ -96,7 +96,7 @@ public static class MenuUi
 
     internal static Image CreateCard(Transform parent, string name)
     {
-        var img = CreateImage(parent, name, ToastSprites.Card, Color.white);
+        var img = CreateImage(parent, name, AchievementsTheme.Current.CardBackground ?? ToastSprites.Card, Color.white);
         img.type = Image.Type.Sliced;
         return img;
     }
@@ -124,12 +124,12 @@ public static class MenuUi
     // Dark disc with a rarity-colored ring (4px). Returns the ring (outer) rect; `inner` is the dark face to parent icons to.
     internal static RectTransform CreateRarityDisc(Transform parent, string name, float size, Color ringColor, out RectTransform inner)
     {
-        var ring = CreateImage(parent, name, ToastSprites.Circle, ringColor);
+        var ring = CreateImage(parent, name, AchievementsTheme.Current.RarityDisc ?? ToastSprites.Circle, ringColor);
         ring.raycastTarget = false;
         var ringRect = ring.rectTransform;
         ringRect.sizeDelta = new Vector2(size, size);
 
-        var face = CreateImage(ringRect, "Inner", ToastSprites.Circle, AchievementsTheme.Current.CardFace);
+        var face = CreateImage(ringRect, "Inner", AchievementsTheme.Current.RarityDisc ?? ToastSprites.Circle, AchievementsTheme.Current.CardFace);
         face.raycastTarget = false;
         inner = face.rectTransform;
         inner.anchorMin = Vector2.zero;
@@ -222,7 +222,8 @@ public static class MenuUi
     /// </summary>
     internal static RectTransform CreateMultiplierBadge(Transform parent, int multiplier, Vector2 overhang)
     {
-        var badge = CreateImage(parent, "MultiplierBadge", ToastSprites.RoundedRectTiny, AccentHover);
+        var theme = AchievementsTheme.Current;
+        var badge = CreateImage(parent, "MultiplierBadge", theme.ProgressBarBackground ?? ToastSprites.RoundedRectTiny, AccentHover);
         badge.type = Image.Type.Sliced;
         badge.raycastTarget = false;
         var rect = badge.rectTransform;
@@ -231,7 +232,7 @@ public static class MenuUi
         rect.anchoredPosition = overhang;
         rect.sizeDelta = new Vector2(34f, 20f);
 
-        var text = CreateText(rect, "Label", $"x{multiplier}", 14f, Color.black, FontStyles.Bold,
+        var text = CreateText(rect, "Label", $"x{multiplier}", theme.CaptionFontSize, Color.black, FontStyles.Bold,
             TextAlignmentOptions.Center);
         text.overflowMode = TextOverflowModes.Overflow;
         var textRect = text.rectTransform;
@@ -386,17 +387,18 @@ public static class MenuUi
     internal static Button CreateButton(Transform panel, string label, Vector2 position, string? name = null,
         bool danger = false)
     {
+        var theme = AchievementsTheme.Current;
         // ButtonBox is pre-baked charcoal, so a tint would multiply into near-black; the
         // danger variant tints a white box of the same radius instead.
-        var bg = CreateImage(panel, $"{name ?? label}Button", danger ? ToastSprites.RoundedRectSmall : ToastSprites.ButtonBox, Color.white);
+        var bg = CreateImage(panel, $"{name ?? label}Button", theme.ButtonBackground ?? (danger ? ToastSprites.RoundedRectSmall : ToastSprites.ButtonBox), Color.white);
         bg.type = Image.Type.Sliced;
         var rect = bg.rectTransform;
         rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
         rect.pivot = new Vector2(0.5f, 0.5f);
         rect.anchoredPosition = position;
-        rect.sizeDelta = new Vector2(180f, 48f);
+        rect.sizeDelta = new Vector2(theme.ButtonWidth, theme.ButtonHeight);
 
-        var text = CreateText(rect, "Label", label, 22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
+        var text = CreateText(rect, "Label", label, theme.BodyFontSize, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
         var textRect = text.rectTransform;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
@@ -441,10 +443,10 @@ public static class MenuUi
     // Thin horizontal progress bar; returns the fill rect so callers can set its anchorMax.x.
     internal static RectTransform CreateProgressBar(Transform parent, Color fillColor, out RectTransform fill)
     {
-        var bg = CreateImage(parent, "ProgressBar", ToastSprites.RoundedRectTiny, TrackOffColor);
+        var bg = CreateImage(parent, "ProgressBar", AchievementsTheme.Current.ProgressBarBackground ?? ToastSprites.RoundedRectTiny, TrackOffColor);
         bg.type = Image.Type.Sliced;
 
-        var fillImg = CreateImage(bg.rectTransform, "Fill", ToastSprites.RoundedRectTiny, fillColor);
+        var fillImg = CreateImage(bg.rectTransform, "Fill", AchievementsTheme.Current.ProgressBarBackground ?? ToastSprites.RoundedRectTiny, fillColor);
         fillImg.type = Image.Type.Sliced;
         fill = fillImg.rectTransform;
         fill.anchorMin = Vector2.zero;
