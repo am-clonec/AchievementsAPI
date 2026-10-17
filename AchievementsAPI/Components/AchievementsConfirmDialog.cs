@@ -1,5 +1,4 @@
 using System.Collections;
-using AchievementsAPI.API;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using TMPro;
@@ -54,40 +53,39 @@ public static class AchievementsConfirmDialog
         scrimButton.navigation = new Navigation { mode = Navigation.Mode.None };
         scrimButton.onClick.AddListener((UnityAction)(() => Close()));
 
-        var theme = AchievementsTheme.Current;
         var card = CreateCard(rootRect, "Card");
         var cardRect = card.rectTransform;
         cardRect.anchorMin = cardRect.anchorMax = new Vector2(0.5f, 0.5f);
         cardRect.pivot = new Vector2(0.5f, 0.5f);
         cardRect.anchoredPosition = Vector2.zero;
-        cardRect.sizeDelta = new Vector2(theme.DialogWidth, theme.DialogHeight);
+        cardRect.sizeDelta = new Vector2(680f, 340f);
         cardRect.localScale = new Vector3(StartScale, StartScale, 1f);
         var group = card.gameObject.AddComponent<CanvasGroup>();
         group.alpha = 0f;
         Coroutines.Start(CoPopIn(cardRect, group, scrim));
 
-        var titleText = CreateText(cardRect, "Title", title, theme.TitleFontSize, TextColor,
+        var titleText = CreateText(cardRect, "Title", title, 34f, TextColor,
             FontStyles.Bold, TextAlignmentOptions.Center);
         titleText.overflowMode = TextOverflowModes.Overflow;
         var titleRect = titleText.rectTransform;
         titleRect.anchorMin = new Vector2(0f, 1f);
         titleRect.anchorMax = new Vector2(1f, 1f);
         titleRect.pivot = new Vector2(0.5f, 1f);
-        titleRect.anchoredPosition = theme.DialogTitlePosition;
+        titleRect.anchoredPosition = new Vector2(0f, -36f);
         titleRect.sizeDelta = new Vector2(-80f, 48f);
 
-        var bodyText = CreateText(cardRect, "Body", body, theme.BodyFontSize, ValueColor,
+        var bodyText = CreateText(cardRect, "Body", body, 22f, ValueColor,
             FontStyles.Normal, TextAlignmentOptions.Center);
         bodyText.enableWordWrapping = true;
         var bodyRect = bodyText.rectTransform;
         bodyRect.anchorMin = new Vector2(0f, 1f);
         bodyRect.anchorMax = new Vector2(1f, 1f);
         bodyRect.pivot = new Vector2(0.5f, 1f);
-        bodyRect.anchoredPosition = theme.DialogBodyPosition;
+        bodyRect.anchoredPosition = new Vector2(0f, -100f);
         bodyRect.sizeDelta = new Vector2(-96f, 120f);
 
-        var cancel = CreateButton(cardRect, cancelLabel, new Vector2(-theme.DialogButtonXOffset, theme.DialogButtonY), "Back");
-        var confirm = CreateButton(cardRect, confirmLabel, new Vector2(theme.DialogButtonXOffset, theme.DialogButtonY), "Confirm", danger: true);
+        var cancel = CreateButton(cardRect, cancelLabel, new Vector2(-110f, 64f), "Back");
+        var confirm = CreateButton(cardRect, confirmLabel, new Vector2(110f, 64f), "Confirm", danger: true);
         AttachGameSounds(cancel.gameObject);
         AttachGameSounds(confirm.gameObject);
 
