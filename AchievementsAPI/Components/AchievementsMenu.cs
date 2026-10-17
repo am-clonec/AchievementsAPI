@@ -1328,6 +1328,7 @@ namespace AchievementsAPI
             row.Ring = disc.GetComponent<Image>();
 
             var icon = CreateImage(inner, "Icon", null, Color.white);
+            icon.type = Image.Type.Simple;
             icon.preserveAspect = true;
             icon.raycastTarget = false;
             var iconRect = icon.rectTransform;
@@ -1337,6 +1338,8 @@ namespace AchievementsAPI
             row.Icon = icon;
 
             var sub = CreateImage(disc, "SubIcon", null, Color.white);
+            sub.type = Image.Type.Simple;
+            sub.preserveAspect = true;
             sub.raycastTarget = false;
             var subRect = sub.rectTransform;
             subRect.anchorMin = subRect.anchorMax = new Vector2(1f, 0f);
@@ -1473,8 +1476,9 @@ namespace AchievementsAPI
             row.SubIcon.gameObject.SetActive(subIcon != null);
             if (subIcon != null)
             {
-                row.SubIcon.sprite = subIcon;
+                row.SubIcon.sprite = ToastSprites.TrimTransparent(subIcon);
                 row.SubIcon.rectTransform.localScale = achievement.MenuSubIconScale;
+                row.SubIcon.rectTransform.anchoredPosition = achievement.MenuSubIconOffset;
             }
 
             row.NameText.text = revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement);
