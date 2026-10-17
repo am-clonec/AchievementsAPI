@@ -32,19 +32,3 @@ AchievementsConfig.ResetToDefaults();
 ```
 
 `AchievementsConfig.Entries` lists every bound setting in the order the settings page shows them, handy for building your own settings UI.
-
-## Theming
-
-Assign `AchievementsTheme.Current` at plugin load to restyle the menu, settings page, dialogs and toasts — it's a record, so start from `Default` and override what you need:
-
-```csharp
-AchievementsTheme.Current = AchievementsTheme.Default with
-{
-    Accent = new Color32(180, 80, 60, 255),
-    AccentHover = new Color32(220, 120, 90, 255),
-};
-```
-
-The theme is read when UI is built: changes take effect the next time the menu is opened or a toast is shown — nothing already on screen is repainted. `AchievementsTheme.Changed` fires after each assignment.
-
-Beyond colors, `MenuBackground` replaces the framed menu window sprite (9-sliced) and `Font` replaces the TMP font on every text the API creates; leave either null to keep the built-in look.

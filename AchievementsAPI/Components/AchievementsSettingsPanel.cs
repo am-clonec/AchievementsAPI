@@ -180,7 +180,7 @@ public static class AchievementsSettingsPanel
             return button;
         }
 
-        var box = CreateImage(strip, $"{label}ValueBox", ToastSprites.RoundedRectTiny, AchievementsTheme.Current.CardFace);
+        var box = CreateImage(strip, $"{label}ValueBox", ToastSprites.RoundedRectTiny, new Color32(41, 40, 41, 255));
         box.type = Image.Type.Sliced;
         var boxRect = box.rectTransform;
         boxRect.anchorMin = boxRect.anchorMax = new Vector2(1f, 0.5f);
