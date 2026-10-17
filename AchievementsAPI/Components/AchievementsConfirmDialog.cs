@@ -73,7 +73,7 @@ public static class AchievementsConfirmDialog
         titleRect.anchorMin = new Vector2(0f, 1f);
         titleRect.anchorMax = new Vector2(1f, 1f);
         titleRect.pivot = new Vector2(0.5f, 1f);
-        titleRect.anchoredPosition = new Vector2(0f, -36f);
+        titleRect.anchoredPosition = theme.DialogTitlePosition;
         titleRect.sizeDelta = new Vector2(-80f, 48f);
 
         var bodyText = CreateText(cardRect, "Body", body, theme.BodyFontSize, ValueColor,
@@ -83,11 +83,11 @@ public static class AchievementsConfirmDialog
         bodyRect.anchorMin = new Vector2(0f, 1f);
         bodyRect.anchorMax = new Vector2(1f, 1f);
         bodyRect.pivot = new Vector2(0.5f, 1f);
-        bodyRect.anchoredPosition = new Vector2(0f, -100f);
+        bodyRect.anchoredPosition = theme.DialogBodyPosition;
         bodyRect.sizeDelta = new Vector2(-96f, 120f);
 
-        var cancel = CreateButton(cardRect, cancelLabel, new Vector2(-110f, 64f), "Back");
-        var confirm = CreateButton(cardRect, confirmLabel, new Vector2(110f, 64f), "Confirm", danger: true);
+        var cancel = CreateButton(cardRect, cancelLabel, new Vector2(-theme.DialogButtonXOffset, theme.DialogButtonY), "Back");
+        var confirm = CreateButton(cardRect, confirmLabel, new Vector2(theme.DialogButtonXOffset, theme.DialogButtonY), "Confirm", danger: true);
         AttachGameSounds(cancel.gameObject);
         AttachGameSounds(confirm.gameObject);
 

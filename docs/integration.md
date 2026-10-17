@@ -157,6 +157,41 @@ AchievementsTheme.Current = AchievementsTheme.Default with
 };
 ```
 
+### Positions
+
+Control the exact placement of UI elements:
+
+```csharp
+AchievementsTheme.Current = AchievementsTheme.Default with
+{
+    // Menu positions
+    CloseButtonPosition = new Vector2(-20f, -50f),
+    TitleIconPosition = new Vector2(120f, -75f),
+    TitlePosition = new Vector2(150f, -50f),
+    FilterRowPosition = new Vector2(200f, -75f),
+    ToolbarOffsetMin = new Vector2(480f, -200f),
+    ToolbarOffsetMax = new Vector2(-100f, -150f),
+
+    // Card positions
+    CardIconPosition = new Vector2(60f, 0f),
+    CardIconSize = new Vector2(60f, 60f),
+    CardDiscSize = 80f,
+    CardNameOffsetMin = new Vector2(120f, -55f),
+    CardNameOffsetMax = new Vector2(-200f, -25f),
+    CardDescOffsetMin = new Vector2(120f, -85f),
+    CardDescOffsetMax = new Vector2(-200f, -60f),
+    CardProgressOffsetMin = new Vector2(120f, 35f),
+    CardProgressOffsetMax = new Vector2(-200f, 45f),
+    CardProgressLabelPosition = new Vector2(-200f, 47f),
+
+    // Dialog positions
+    DialogTitlePosition = new Vector2(0f, -40f),
+    DialogBodyPosition = new Vector2(0f, -110f),
+    DialogButtonY = 70f,
+    DialogButtonXOffset = 120f,
+};
+```
+
 ### Complete Example
 
 A complete theme customization:
@@ -184,6 +219,11 @@ public override void Load()
         // Larger text
         TitleFontSize = 44f,
         BodyFontSize = 26f,
+
+        // Adjusted positions
+        TitlePosition = new Vector2(150f, -50f),
+        CardIconPosition = new Vector2(65f, 0f),
+        CardNameOffsetMin = new Vector2(125f, -55f),
     };
 }
 

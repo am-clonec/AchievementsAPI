@@ -80,8 +80,6 @@ public sealed record AchievementsTheme
     public float CardHeight { get; init; } = 100f;
     /// <summary>Achievement card padding in pixels.</summary>
     public float CardPadding { get; init; } = 16f;
-    /// <summary>Icon size in achievement cards.</summary>
-    public float CardIconSize { get; init; } = 68f;
 
     // LAYOUT - Buttons
     /// <summary>Button width in pixels.</summary>
@@ -124,6 +122,48 @@ public sealed record AchievementsTheme
     public float CardNameFontSize { get; init; } = 24f;
     /// <summary>Card description text size.</summary>
     public float CardDescFontSize { get; init; } = 18f;
+
+    // POSITIONS - Menu
+    /// <summary>Close button position (anchored top-left).</summary>
+    public Vector2 CloseButtonPosition { get; init; } = new(-14f, -48f);
+    /// <summary>Title icon position (anchored top-left).</summary>
+    public Vector2 TitleIconPosition { get; init; } = new(108f, -70f);
+    /// <summary>Title text position (anchored top-left).</summary>
+    public Vector2 TitlePosition { get; init; } = new(134f, -44f);
+    /// <summary>Filter row position (anchored top-center).</summary>
+    public Vector2 FilterRowPosition { get; init; } = new(183f, -70f);
+    /// <summary>Toolbar position (offsets from panel edges).</summary>
+    public Vector2 ToolbarOffsetMin { get; init; } = new(450f, -186f);
+    public Vector2 ToolbarOffsetMax { get; init; } = new(-84f, -136f);
+
+    // POSITIONS - Cards
+    /// <summary>Card icon/disc position (anchored left-center).</summary>
+    public Vector2 CardIconPosition { get; init; } = new(56f, 0f);
+    /// <summary>Card icon size inside disc.</summary>
+    public Vector2 CardIconSize { get; init; } = new(54f, 54f);
+    /// <summary>Card disc size.</summary>
+    public float CardDiscSize { get; init; } = 76f;
+    /// <summary>Card name text position (offsets from top-left).</summary>
+    public Vector2 CardNameOffsetMin { get; init; } = new(112f, -52f);
+    public Vector2 CardNameOffsetMax { get; init; } = new(-180f, -22f);
+    /// <summary>Card description text position (offsets from top-left).</summary>
+    public Vector2 CardDescOffsetMin { get; init; } = new(112f, -80f);
+    public Vector2 CardDescOffsetMax { get; init; } = new(-180f, -56f);
+    /// <summary>Card progress bar position (offsets from bottom).</summary>
+    public Vector2 CardProgressOffsetMin { get; init; } = new(112f, 30f);
+    public Vector2 CardProgressOffsetMax { get; init; } = new(-180f, 40f);
+    /// <summary>Card progress label position (anchored bottom-right).</summary>
+    public Vector2 CardProgressLabelPosition { get; init; } = new(-180f, 42f);
+
+    // POSITIONS - Dialogs
+    /// <summary>Dialog title position (anchored top-center).</summary>
+    public Vector2 DialogTitlePosition { get; init; } = new(0f, -36f);
+    /// <summary>Dialog body position (anchored top-center).</summary>
+    public Vector2 DialogBodyPosition { get; init; } = new(0f, -100f);
+    /// <summary>Dialog button vertical position (anchored bottom).</summary>
+    public float DialogButtonY { get; init; } = 64f;
+    /// <summary>Dialog button horizontal offset from center.</summary>
+    public float DialogButtonXOffset { get; init; } = 110f;
 
     /// <summary>Color for a rarity tier (0 = <see cref="Rim"/>).</summary>
     public Color RarityColor(int rarity) => rarity switch { 1 => Rare, 2 => Epic, 3 => Legendary, _ => Rim };

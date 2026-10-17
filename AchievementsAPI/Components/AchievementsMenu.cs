@@ -203,7 +203,7 @@ namespace AchievementsAPI
             var closeRect = closeImg.rectTransform;
             closeRect.anchorMin = closeRect.anchorMax = new Vector2(0f, 1f);
             closeRect.pivot = new Vector2(0.5f, 0.5f);
-            closeRect.anchoredPosition = new Vector2(-14f, -48f);
+            closeRect.anchoredPosition = theme.CloseButtonPosition;
             closeRect.sizeDelta = new Vector2(64f, 64f);
             var close = closeImg.gameObject.AddComponent<Button>();
             close.transition = Selectable.Transition.ColorTint;
@@ -224,7 +224,7 @@ namespace AchievementsAPI
             var iconRect = _titleIcon.rectTransform;
             iconRect.anchorMin = iconRect.anchorMax = new Vector2(0f, 1f);
             iconRect.pivot = new Vector2(0.5f, 0.5f);
-            iconRect.anchoredPosition = new Vector2(108f, -70f);
+            iconRect.anchoredPosition = theme.TitleIconPosition;
             iconRect.sizeDelta = new Vector2(38f, 38f);
 
             _title = CreateText(_panel, "Title", AchievementsStrings.GetText(AchievementsStrings.MenuTitle),
@@ -233,7 +233,7 @@ namespace AchievementsAPI
             var titleRect = _title.rectTransform;
             titleRect.anchorMin = titleRect.anchorMax = new Vector2(0f, 1f);
             titleRect.pivot = new Vector2(0f, 1f);
-            titleRect.anchoredPosition = new Vector2(134f, -44f);
+            titleRect.anchoredPosition = theme.TitlePosition;
             titleRect.sizeDelta = new Vector2(900f, 52f);
 
             // Filter pills centered over the right column (x 430..1436 -> 183)
@@ -242,7 +242,7 @@ namespace AchievementsAPI
             _filterRow.SetParent(_panel, false);
             _filterRow.anchorMin = _filterRow.anchorMax = new Vector2(0.5f, 1f);
             _filterRow.pivot = new Vector2(0.5f, 0.5f);
-            _filterRow.anchoredPosition = new Vector2(183f, -70f);
+            _filterRow.anchoredPosition = theme.FilterRowPosition;
             _filterRow.sizeDelta = new Vector2(836f, 50f);
             var names = FilterNames();
             for (var i = 0; i < names.Length; i++)
@@ -284,8 +284,8 @@ namespace AchievementsAPI
             _toolbar.anchorMin = new Vector2(0f, 1f);
             _toolbar.anchorMax = new Vector2(1f, 1f);
             _toolbar.pivot = new Vector2(0.5f, 1f);
-            _toolbar.offsetMin = new Vector2(450f, -186f);
-            _toolbar.offsetMax = new Vector2(-84f, -136f);
+            _toolbar.offsetMin = theme.ToolbarOffsetMin;
+            _toolbar.offsetMax = theme.ToolbarOffsetMax;
 
             _searchBox = CreateImage(_toolbar, "SearchIconBox", ToastSprites.ButtonBox, Color.white);
             _searchBox.type = Image.Type.Sliced;
@@ -1305,6 +1305,7 @@ namespace AchievementsAPI
         [HideFromIl2Cpp]
         private ListRow CreateRow()
         {
+            var theme = AchievementsTheme.Current;
             var row = new ListRow();
             var card = CreateCard(_listContent, "Row");
             row.Card = card;
@@ -1323,10 +1324,10 @@ namespace AchievementsAPI
             rim.gameObject.SetActive(false);
             row.Rim = rim;
 
-            var disc = CreateRarityDisc(rowRect, "Disc", 76f, RimColor, out var inner);
+            var disc = CreateRarityDisc(rowRect, "Disc", theme.CardDiscSize, RimColor, out var inner);
             disc.anchorMin = disc.anchorMax = new Vector2(0f, 0.5f);
             disc.pivot = new Vector2(0.5f, 0.5f);
-            disc.anchoredPosition = new Vector2(56f, 0f);
+            disc.anchoredPosition = theme.CardIconPosition;
             row.Ring = disc.GetComponent<Image>();
 
             var icon = CreateImage(inner, "Icon", null, Color.white);
@@ -1335,7 +1336,7 @@ namespace AchievementsAPI
             var iconRect = icon.rectTransform;
             iconRect.anchorMin = iconRect.anchorMax = new Vector2(0.5f, 0.5f);
             iconRect.anchoredPosition = Vector2.zero;
-            iconRect.sizeDelta = new Vector2(54f, 54f);
+            iconRect.sizeDelta = theme.CardIconSize;
             row.Icon = icon;
 
             var sub = CreateImage(disc, "SubIcon", null, Color.white);
@@ -1353,8 +1354,8 @@ namespace AchievementsAPI
             var nameRect = name.rectTransform;
             nameRect.anchorMin = new Vector2(0f, 1f);
             nameRect.anchorMax = new Vector2(1f, 1f);
-            nameRect.offsetMin = new Vector2(112f, -52f);
-            nameRect.offsetMax = new Vector2(-180f, -22f);
+            nameRect.offsetMin = theme.CardNameOffsetMin;
+            nameRect.offsetMax = theme.CardNameOffsetMax;
             row.NameText = name;
 
             var desc = CreateText(rowRect, "Description", "", 19f, ValueColor);
@@ -1362,15 +1363,15 @@ namespace AchievementsAPI
             var descRect = desc.rectTransform;
             descRect.anchorMin = new Vector2(0f, 1f);
             descRect.anchorMax = new Vector2(1f, 1f);
-            descRect.offsetMin = new Vector2(112f, -80f);
-            descRect.offsetMax = new Vector2(-180f, -56f);
+            descRect.offsetMin = theme.CardDescOffsetMin;
+            descRect.offsetMax = theme.CardDescOffsetMax;
             row.DescText = desc;
 
             var bar = CreateProgressBar(rowRect, RimColor, out var fill);
             bar.anchorMin = new Vector2(0f, 0f);
             bar.anchorMax = new Vector2(1f, 0f);
-            bar.offsetMin = new Vector2(112f, 30f);
-            bar.offsetMax = new Vector2(-180f, 40f);
+            bar.offsetMin = theme.CardProgressOffsetMin;
+            bar.offsetMax = theme.CardProgressOffsetMax;
             row.Fill = fill.GetComponent<Image>();
             row.FillRect = fill;
 
@@ -1379,7 +1380,7 @@ namespace AchievementsAPI
             var progressLabelRect = progressLabel.rectTransform;
             progressLabelRect.anchorMin = progressLabelRect.anchorMax = new Vector2(1f, 0f);
             progressLabelRect.pivot = new Vector2(1f, 0f);
-            progressLabelRect.anchoredPosition = new Vector2(-180f, 42f);
+            progressLabelRect.anchoredPosition = theme.CardProgressLabelPosition;
             progressLabelRect.sizeDelta = new Vector2(200f, 20f);
             progressLabel.gameObject.SetActive(false);
             row.ProgressLabel = progressLabel;
