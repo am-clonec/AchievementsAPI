@@ -19,12 +19,12 @@ namespace AchievementsAPI;
 /// </summary>
 public static class XboxToast
 {
-    private static float PillHeight => AchievementsTheme.Current.ToastHeight;
-    private static float PillWidth => AchievementsTheme.Current.ToastWidth;
-    private static float CircleSize => PillHeight + 4f;
-    private static float PillCollapsedWidth = 36f;
-    private static float IconSize => AchievementsTheme.Current.ToastIconSize;
-    private static float EdgeOffset => AchievementsTheme.Current.ToastEdgeOffset;
+    private const float PillHeight = 96f;
+    private const float PillWidth = 560f;
+    private const float CircleSize = PillHeight + 4f;
+    private const float PillCollapsedWidth = 36f;
+    private const float IconSize = 76f;
+    private const float EdgeOffset = 140f;
     private const float SideMargin = 40f;
     private const float TitleY = 15f;
     private const float SwapOffset = 14f;
@@ -242,12 +242,7 @@ public static class XboxToast
         pillGo.SetActive(false);
 
         // Pill background: the achievement card frame with a rarity-tinted rim
-        var theme = AchievementsTheme.Current;
         var pillImg = MenuUi.CreateRarityCard(instance.Pill, "Background", request.Rarity);
-        if (theme.ToastBackground != null)
-        {
-            pillImg.sprite = theme.ToastBackground;
-        }
         pillImg.raycastTarget = true;
         var pillBgRect = pillImg.rectTransform;
         pillBgRect.anchorMin = Vector2.zero;
@@ -277,7 +272,7 @@ public static class XboxToast
         instance.TextGroup = textGo.AddComponent<CanvasGroup>();
         instance.TextGroup.alpha = 0f;
 
-        var title = CreateText(instance.TextRect, "Title", request.Title, theme.BodyFontSize, MenuUi.ValueColor);
+        var title = CreateText(instance.TextRect, "Title", request.Title, 22f, MenuUi.ValueColor);
         title.overflowMode = TextOverflowModes.Overflow;
         instance.Title = title;
         var titleRect = title.rectTransform;
@@ -293,7 +288,7 @@ public static class XboxToast
             : AchievementsStrings.ToastHintMiddleClick;
         var hint = CreateText(instance.TextRect, "Hint",
             AchievementsStrings.GetText(hintText),
-            theme.BodyFontSize, MenuUi.ValueColor);
+            22f, MenuUi.ValueColor);
         hint.overflowMode = TextOverflowModes.Overflow;
         instance.Hint = hint;
         hint.alpha = 0f;
@@ -303,7 +298,7 @@ public static class XboxToast
         hintRect.anchoredPosition = new Vector2(6f, 15f);
         hintRect.sizeDelta = new Vector2(PillWidth, 26f);
 
-        var subtitle = CreateText(instance.TextRect, "Subtitle", request.Subtitle, theme.HeaderFontSize, MenuUi.TextColor, FontStyles.Bold);
+        var subtitle = CreateText(instance.TextRect, "Subtitle", request.Subtitle, 30f, MenuUi.TextColor, FontStyles.Bold);
         subtitle.overflowMode = TextOverflowModes.Overflow;
         var subtitleRect = subtitle.rectTransform;
         subtitleRect.anchorMin = subtitleRect.anchorMax = new Vector2(0f, 0.5f);
