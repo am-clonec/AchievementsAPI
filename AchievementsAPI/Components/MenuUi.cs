@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AchievementsAPI.API;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using UnityEngine;
@@ -18,17 +19,15 @@ namespace AchievementsAPI;
 /// </summary>
 public static class MenuUi
 {
-    internal static Color32 AccentColor => new Color32(74, 127, 121, 255);   // AU teal
-    internal static Color32 AccentHover => new Color32(126, 203, 195, 255);
-    internal static Color32 PressedColor => new Color32(56, 96, 92, 255);
-    internal static Color32 TrackOffColor => new Color32(112, 112, 112, 255);
-    internal static Color32 ValueColor => new Color32(190, 190, 190, 255);
-    internal static Color32 TextColor => new Color32(255, 255, 255, 255);
-    internal static Color32 RimColor => new Color32(112, 114, 118, 255);         // neutral ring for common/no-rarity
-    internal static Color32 CommonLabelColor => new Color32(230, 230, 230, 255);
-    internal static Color32 DangerColor => new Color32(196, 64, 64, 255);
-    internal static Color32 DangerHover => new Color32(232, 96, 96, 255);
-    internal static Color32 DangerPressed => new Color32(140, 44, 44, 255);
+    internal static readonly Color32 AccentColor = new(74, 127, 121, 255);   // AU teal
+    internal static readonly Color32 AccentHover = new(126, 203, 195, 255);
+    internal static readonly Color32 PressedColor = new(56, 96, 92, 255);
+    internal static readonly Color32 TrackOffColor = new(112, 112, 112, 255);
+    internal static readonly Color32 ValueColor = new(190, 190, 190, 255);
+    internal static readonly Color32 RimColor = new(112, 114, 118, 255);     // neutral ring for common/no-rarity
+    internal static readonly Color32 DangerColor = new(196, 64, 64, 255);
+    internal static readonly Color32 DangerHover = new(232, 96, 96, 255);
+    internal static readonly Color32 DangerPressed = new(140, 44, 44, 255);
 
     internal static Image CreateImage(Transform parent, string name, Sprite? sprite, Color color)
     {
@@ -394,7 +393,7 @@ public static class MenuUi
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(180f, 48f);
 
-        var text = CreateText(rect, "Label", label, 22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
+        var text = CreateText(rect, "Label", label, 22f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
         var textRect = text.rectTransform;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
@@ -508,13 +507,16 @@ public static class MenuUi
         target.SetAsLastSibling();
     }
 
-    internal static Color RarityColor(int rarity) => rarity switch
+    internal static Color RarityColor(int rarity)
     {
-        1 => new Color32(104, 172, 212, 255),
-        2 => new Color32(158, 112, 214, 255),
-        3 => new Color32(214, 184, 92, 255),
-        _ => new Color32(112, 114, 118, 255)
-    };
+        return rarity switch
+        {
+            1 => new Color32(104, 172, 212, 255),
+            2 => new Color32(158, 112, 214, 255),
+            3 => new Color32(214, 184, 92, 255),
+            _ => RimColor
+        };
+    }
 
     // Progress-bar fills: the rarity color, but the teal AccentHover for
     // common so the fill does not sit gray-on-gray against the ring/track.

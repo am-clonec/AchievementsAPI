@@ -4,7 +4,6 @@ using BepInEx.Configuration;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static AchievementsAPI.MenuUi;
 
@@ -43,7 +42,7 @@ public static class AchievementsSettingsPanel
         CreateToggleRow(CreateRowStrip(rect, rowsTop), AchievementsStrings.GetText(AchievementsStrings.SettingToasts), AchievementsConfig.ToastsEnabled);
         CreateToggleRow(CreateRowStrip(rect, rowsTop - 76f), AchievementsStrings.GetText(AchievementsStrings.SettingSound), AchievementsConfig.ToastSoundEnabled);
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 152f), AchievementsStrings.GetText(AchievementsStrings.SettingVolume), AchievementsConfig.ToastVolume, 0f, 1f,
-            v => $"{Mathf.RoundToInt(v * 100f)}%", onStep: AchievementToast.PlayVolumePreview);
+            v => $"{Mathf.RoundToInt(v * 100f)}%");
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 228f), AchievementsStrings.GetText(AchievementsStrings.SettingDuration), AchievementsConfig.ToastDuration, 1f, 10f,
             v => $"{v:0.0}s");
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 304f), AchievementsStrings.GetText(AchievementsStrings.SettingRareDuration), AchievementsConfig.RareToastDuration, 1f, 10f,
@@ -79,7 +78,7 @@ public static class AchievementsSettingsPanel
 
     private static void CreateRowLabel(Transform strip, string text)
     {
-        var label = CreateText(strip, "Label", text, 24f, TextColor);
+        var label = CreateText(strip, "Label", text, 24f, Color.white);
         var rect = label.rectTransform;
         rect.anchorMin = rect.anchorMax = new Vector2(0f, 0.5f);
         rect.pivot = new Vector2(0f, 0.5f);
@@ -160,7 +159,7 @@ public static class AchievementsSettingsPanel
             rect.anchoredPosition = new Vector2(x, 0f);
             rect.sizeDelta = new Vector2(36f, 36f);
 
-            var labelText = CreateText(rect, "Label", text, 22f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
+            var labelText = CreateText(rect, "Label", text, 22f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
             labelText.rectTransform.anchorMin = Vector2.zero;
             labelText.rectTransform.anchorMax = Vector2.one;
             labelText.rectTransform.offsetMin = Vector2.zero;
@@ -189,7 +188,7 @@ public static class AchievementsSettingsPanel
         boxRect.sizeDelta = new Vector2(200f, 36f);
 
         var index = Mathf.Clamp(initial, 0, Mathf.Max(0, names.Count - 1));
-        var valueText = CreateText(boxRect, "Value", names.Count > 0 ? names[index] : "", 20f, TextColor,
+        var valueText = CreateText(boxRect, "Value", names.Count > 0 ? names[index] : "", 20f, Color.white,
             FontStyles.Normal, TextAlignmentOptions.Center);
         var valueRect = valueText.rectTransform;
         valueRect.anchorMin = Vector2.zero;
@@ -222,7 +221,7 @@ public static class AchievementsSettingsPanel
         rect.anchoredPosition = new Vector2(-24f, 0f);
         rect.sizeDelta = new Vector2(120f, 36f);
 
-        var labelText = CreateText(rect, "Label", buttonText, 20f, TextColor, FontStyles.Bold, TextAlignmentOptions.Center);
+        var labelText = CreateText(rect, "Label", buttonText, 20f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
         labelText.rectTransform.anchorMin = Vector2.zero;
         labelText.rectTransform.anchorMax = Vector2.one;
         labelText.rectTransform.offsetMin = Vector2.zero;
@@ -243,7 +242,7 @@ public static class AchievementsSettingsPanel
     }
 
     private static void CreateSliderRow(Transform strip, string label, ConfigEntry<float> entry,
-        float min, float max, System.Func<float, string> format, System.Action<float>? onStep = null)
+        float min, float max, System.Func<float, string> format)
     {
         CreateRowLabel(strip, label);
 
@@ -289,22 +288,10 @@ public static class AchievementsSettingsPanel
         slider.maxValue = max;
         slider.wholeNumbers = false;
         slider.value = entry.Value;
-        // The config file hits disk on every `entry.Value` set, so writes are
-        // debounced to label-visible steps plus one final write on release.
-        var lastText = format(entry.Value);
         slider.onValueChanged.AddListener((UnityAction<float>)(v =>
         {
-            var text = format(v);
-            if (text == lastText) return;
-            lastText = text;
-            valueLabel.text = text;
             entry.Value = v;
-            onStep?.Invoke(v);
+            valueLabel.text = format(v);
         }));
-
-        var trigger = bg.gameObject.GetComponent<EventTrigger>() ?? bg.gameObject.AddComponent<EventTrigger>();
-        var pointerUp = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-        pointerUp.callback.AddListener((UnityAction<BaseEventData>)(_ => entry.Value = slider.value));
-        trigger.triggers.Add(pointerUp);
     }
 }

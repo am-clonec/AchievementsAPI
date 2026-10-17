@@ -24,13 +24,7 @@ public class Assets
     /// </summary>
     public static AudioClip? RareChime => Clip(ref _rareChime, "AchievementsAPI.Resources.RareChime.wav");
 
-    private static AudioClip? _volumeTick;
-    /// <summary>
-    /// The short tick played while dragging the toast volume slider.
-    /// </summary>
-    public static AudioClip? VolumeTick => Clip(ref _volumeTick, "AchievementsAPI.Resources.VolumeTick.wav", 0f);
-
     // `cache == null` is a Unity null check, so a destroyed clip is reloaded.
-    private static AudioClip? Clip(ref AudioClip? cache, string resource, float fadeOutSeconds = 0.6f)
-        => cache == null ? cache = WavLoader.LoadFromResource(typeof(Assets).Assembly, resource, fadeOutSeconds) : cache;
+    private static AudioClip? Clip(ref AudioClip? cache, string resource)
+        => cache == null ? cache = WavLoader.LoadFromResource(typeof(Assets).Assembly, resource) : cache;
 }

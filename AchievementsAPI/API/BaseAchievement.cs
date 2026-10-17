@@ -175,7 +175,7 @@
             if (Unlocked) return; //Won't unlock an already unlocked achievement
             Unlocked = true;
             if (doStorageUpdate) AchievementStorage.AchievementStorageUpdate(this, true);
-            AchievementsManager.RaiseUnlocked(this);
+
         }
         /// <summary>
         /// Resets this achievement back to its locked state and writes through to storage.
@@ -186,7 +186,6 @@
             AchievementToastQueue.Dequeue(this);
             Unlocked = false;
             AchievementStorage.AchievementDataReset(this, false, save);
-            AchievementsManager.RaiseReset(this);
         }
         /// <summary>
         /// Resolves the achievement's <see cref="Name"/> in the current language

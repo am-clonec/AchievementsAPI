@@ -64,7 +64,7 @@ public static class AchievementsConfirmDialog
         group.alpha = 0f;
         Coroutines.Start(CoPopIn(cardRect, group, scrim));
 
-        var titleText = CreateText(cardRect, "Title", title, 34f, TextColor,
+        var titleText = CreateText(cardRect, "Title", title, 34f, Color.white,
             FontStyles.Bold, TextAlignmentOptions.Center);
         titleText.overflowMode = TextOverflowModes.Overflow;
         var titleRect = titleText.rectTransform;

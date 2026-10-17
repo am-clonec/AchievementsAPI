@@ -112,8 +112,6 @@ public static class ToastSprites
     /// </summary>
     public static Sprite ButtonBox => _buttonBox ??= CreateSolidRoundedBox(14f, new Color32(61, 64, 64, 255), "AchMenuButtonBox");
 
-
-
     /// <summary>
     /// <see cref="PanelBox"/> with corner radius 14.
     /// </summary>

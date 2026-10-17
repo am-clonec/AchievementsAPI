@@ -46,7 +46,6 @@ Achievements are matched by `Id`; `Name` is informational only (kept for save co
 - `Unlock()` saves immediately. An unlock is never left in memory long enough to lose.
 - Progress updates are batched: `SetValue`/`Increment` schedule a save roughly half a second out, so rapid increments (e.g. per-task completions) coalesce into one write instead of causing stutter.
 - `AchievementStorage.Save()` forces a write; `AchievementDataReset(...)` and the [lifecycle resets](game-events.md) use it after batching.
-- `AchievementStorage.ResetAll()` clears the whole store (including entries for achievements that are no longer registered), runs `Reset(false)` on every registered achievement and saves once. This is what the menu's [Reset all achievements](menu-and-toasts.md#resetting-all-achievements) button calls after the player confirms.
 
 ## Failure handling
 

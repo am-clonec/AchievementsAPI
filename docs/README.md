@@ -9,7 +9,6 @@ Developer documentation for the Achievements API. The [README](../README.md) cov
 - [Tabs and categories](tabs-and-categories.md): tab discovery, mod grouping, shared categories
 - [Localization](localization.md): `StringNames`, translation providers, and why achievement ids ignore display language
 - [Game events](game-events.md): reset triggers, progress persistence, deferred toast timing
-- [Integrating with the API](integration.md): reading achievement state, the settings entries, theming
 
 ## The player-facing side
 

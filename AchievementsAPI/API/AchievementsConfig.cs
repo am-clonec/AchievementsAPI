@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using BepInEx.Configuration;
 
 namespace AchievementsAPI.API;
@@ -46,12 +44,6 @@ public static class AchievementsConfig
     /// </summary>
     public static ConfigEntry<bool> TrackpadMode { get; private set; } = null!;
 
-    /// <summary>Every bound setting, in the order the settings page shows them.</summary>
-    public static IReadOnlyList<ConfigEntryBase> Entries { get; private set; } = Array.Empty<ConfigEntryBase>();
-    /// <summary>Raised after any entry's value changes (from the settings page, code, or a config reload).</summary>
-    public static event Action<ConfigEntryBase>? SettingChanged;
-    /// <summary>Resets every setting to its default value.</summary>
-    public static void ResetToDefaults() { foreach (var e in Entries) e.BoxedValue = e.DefaultValue; }
 
     internal static void Bind(ConfigFile config)
     {
@@ -84,7 +76,5 @@ public static class AchievementsConfig
         TrackpadMode = config.Bind(section, nameof(TrackpadMode), false,
             "Open achievements from a toast with a normal click instead of middle-click (for trackpads).");
 
-        Entries = [ToastsEnabled, ToastSoundEnabled, ToastVolume, ToastDuration, RareToastDuration, Position, TrackpadMode];
-        config.SettingChanged += (_, args) => SettingChanged?.Invoke(args.ChangedSetting);
     }
 }
