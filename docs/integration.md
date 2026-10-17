@@ -70,24 +70,14 @@ whenever `Current` is assigned.
 
 The theme exposes these color properties:
 
-  -----------------------------------------------------------------------
-  Properties                          Purpose
-  ----------------------------------- -----------------------------------
-  `Accent`, `AccentHover`,            Primary interactive elements
-  `AccentPressed`                     
-
-  `Danger`, `DangerHover`,            Destructive actions
-  `DangerPressed`                     
-
-  `PrimaryText`, `SecondaryText`      Text
-
-  `Track`, `Rim`                      Progress and decorative elements
-
-  `CommonLabel`, `Rare`, `Epic`,      Rarity labels
-  `Legendary`                         
-
-  `Surface`, `CardFace`               UI backgrounds
-  -----------------------------------------------------------------------
+| Properties | Purpose |
+|---|---|
+| `Accent`, `AccentHover`, `AccentPressed` | Primary interactive elements |
+| `Danger`, `DangerHover`, `DangerPressed` | Destructive actions |
+| `PrimaryText`, `SecondaryText` | Text |
+| `Track`, `Rim` | Progress and decorative elements |
+| `CommonLabel`, `Rare`, `Epic`, `Legendary` | Rarity labels |
+| `Surface`, `CardFace` | UI backgrounds |
 
 Override any combination using the same `with` syntax shown above.
 
