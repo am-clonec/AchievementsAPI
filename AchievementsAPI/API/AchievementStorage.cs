@@ -186,6 +186,20 @@ public class AchievementStorage
         }
     }
 
+    /// <summary>
+    /// Wipes every achievement (registered or stale) back to locked with zero progress and rewrites the save file.
+    /// </summary>
+    public static void ResetAll()
+    {
+        _saveScheduled = false;
+        BaseAchievements.Clear();
+        _index.Clear();
+        foreach (var tab in AchievementsManager.Tabs)
+            foreach (var achievement in tab.GetAchievements())
+                achievement.Reset(false);
+        Save();
+    }
+
     public static void Save()
     {
         var directory = Path.GetDirectoryName(JsonPath);

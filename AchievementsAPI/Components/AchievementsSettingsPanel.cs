@@ -20,15 +20,16 @@ public static class AchievementsSettingsPanel
     /// Creates the settings panel (hidden until toggled by the caller).
     /// </summary>
     /// <param name="parent">The menu root transform.</param>
+    /// <param name="onResetAll">Invoked when the reset-all row's button is clicked.</param>
     /// <returns>The created settings panel.</returns>
-    public static GameObject Create(Transform parent)
+    public static GameObject Create(Transform parent, System.Action onResetAll)
     {
-        var panel = CreatePanel(parent);
+        var panel = CreatePanel(parent, onResetAll);
         panel.SetActive(false);
         return panel;
     }
 
-    private static GameObject CreatePanel(Transform parent)
+    private static GameObject CreatePanel(Transform parent, System.Action onResetAll)
     {
         // Plain container: the rows are the same charcoal boxes as the menu's
         // buttons, so no card behind them. The menu positions it (MenuUi.MatchRect).
@@ -48,6 +49,8 @@ public static class AchievementsSettingsPanel
             v => $"{v:0.0}s");
         CreateCycleRow(CreateRowStrip(rect, rowsTop - 380f), AchievementsStrings.GetText(AchievementsStrings.SettingPosition), AchievementsConfig.Position);
         CreateToggleRow(CreateRowStrip(rect, rowsTop - 456f), AchievementsStrings.GetText(AchievementsStrings.SettingTrackpadMode), AchievementsConfig.TrackpadMode);
+        CreateActionRow(CreateRowStrip(rect, rowsTop - 532f), AchievementsStrings.GetText(AchievementsStrings.SettingResetAll),
+            AchievementsStrings.GetText(AchievementsStrings.ResetAllButton), onResetAll);
 
         var preview = CreateButton(rect, AchievementsStrings.GetText(AchievementsStrings.Preview), Vector2.zero, "Preview");
         var previewRect = preview.GetComponent<RectTransform>();
@@ -203,6 +206,39 @@ public static class AchievementsSettingsPanel
 
         Arrow($"{label}Left", "<", -278f).onClick.AddListener((UnityAction)(() => Step(-1)));
         Arrow($"{label}Right", ">", -26f).onClick.AddListener((UnityAction)(() => Step(1)));
+    }
+
+    // Label plus a danger-tinted pill button pinned to the strip's right edge.
+    private static void CreateActionRow(Transform strip, string label, string buttonText, System.Action onClick)
+    {
+        CreateRowLabel(strip, label);
+
+        var bg = CreateImage(strip, "ResetAllButton", ToastSprites.RoundedRectTiny, Color.white);
+        bg.type = Image.Type.Sliced;
+        var rect = bg.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(1f, 0.5f);
+        rect.pivot = new Vector2(1f, 0.5f);
+        rect.anchoredPosition = new Vector2(-24f, 0f);
+        rect.sizeDelta = new Vector2(120f, 36f);
+
+        var labelText = CreateText(rect, "Label", buttonText, 20f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
+        labelText.rectTransform.anchorMin = Vector2.zero;
+        labelText.rectTransform.anchorMax = Vector2.one;
+        labelText.rectTransform.offsetMin = Vector2.zero;
+        labelText.rectTransform.offsetMax = Vector2.zero;
+
+        var button = bg.gameObject.AddComponent<Button>();
+        button.transition = Selectable.Transition.ColorTint;
+        var colors = button.colors;
+        colors.normalColor = DangerColor;
+        colors.highlightedColor = DangerHover;
+        colors.pressedColor = DangerPressed;
+        colors.selectedColor = DangerColor;
+        colors.colorMultiplier = 1f;
+        colors.fadeDuration = 0.1f;
+        button.colors = colors;
+        button.onClick.AddListener((UnityAction)(() => onClick()));
+        AttachGameSounds(bg.gameObject);
     }
 
     private static void CreateSliderRow(Transform strip, string label, ConfigEntry<float> entry,

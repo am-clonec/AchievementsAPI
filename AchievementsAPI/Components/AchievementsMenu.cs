@@ -50,6 +50,8 @@ namespace AchievementsAPI
         private GameObject _settingsPanel;
         private Button _settingsButton;
         private GameObject _detailPanel;
+        private GameObject _dialog;
+        private Action _closeDialog;
         private RectTransform _toolbar;
         private TMP_InputField _searchField;
         private Image _searchIcon;
@@ -142,7 +144,7 @@ namespace AchievementsAPI
                 : focused is { } f && f.Tab.IsSelectable ? AchievementsManager.ResolveCategory(f.Tab, f.Achievement) : null;
 
             BuildChrome();
-            _settingsPanel = AchievementsSettingsPanel.Create(_panel);
+            _settingsPanel = AchievementsSettingsPanel.Create(_panel, ShowResetAllDialog);
             RebuildStatsCard();
             RebuildCategories();
             RebuildList();
@@ -1612,6 +1614,34 @@ namespace AchievementsAPI
             if (_controllerMode) EnsureSelection();
         }
 
+        private void ShowResetAllDialog()
+        {
+            if (_dialog != null) return;
+            DeselectIfInside(_settingsPanel);
+            _dialog = AchievementsConfirmDialog.Show(transform,
+                AchievementsStrings.GetText(AchievementsStrings.ResetAllTitle),
+                AchievementsStrings.GetText(AchievementsStrings.ResetAllBody),
+                AchievementsStrings.GetText(AchievementsStrings.ResetAllConfirm),
+                AchievementsStrings.GetText(AchievementsStrings.ResetAllCancel),
+                ResetAllAchievements,
+                () =>
+                {
+                    _dialog = null;
+                    _closeDialog = null;
+                    if (_controllerMode) EnsureSelection();
+                },
+                out _closeDialog);
+            if (_controllerMode) EnsureSelection();
+        }
+
+        private void ResetAllAchievements()
+        {
+            AchievementStorage.ResetAll();
+            foreach (var tab in _selectableTabs) AchievementStorage.AchievementStorageGet(tab);
+            RebuildStatsCard();
+            RebuildList();
+        }
+
         [HideFromIl2Cpp]
         internal void FocusAchievement(string achievementId)
         {
@@ -1760,6 +1790,7 @@ namespace AchievementsAPI
 
         private GameObject ActivePage()
         {
+            if (_dialog != null && _dialog.activeSelf) return _dialog;
             if (_detailPanel != null && _detailPanel.activeSelf) return _detailPanel;
             if (_settingsPanel != null && _settingsPanel.activeSelf) return _settingsPanel;
             return null;
@@ -1834,7 +1865,7 @@ namespace AchievementsAPI
                 _ => sel.FindSelectableOnRight()
             };
             if (next == null || !next.gameObject.activeInHierarchy || !next.interactable
-                || !next.transform.IsChildOf(transform)) return;
+                || !next.transform.IsChildOf(NavRoot())) return;
             Select(next);
         }
 
@@ -1863,8 +1894,16 @@ namespace AchievementsAPI
             }
         }
 
+        // Controller focus stays inside the modal dialog when one is open.
+        private Transform NavRoot() => _dialog != null ? _dialog.transform : transform;
+
         private void CancelPage()
         {
+            if (_dialog != null)
+            {
+                _closeDialog?.Invoke();
+                return;
+            }
             if (_modPopover != null && _modPopover.activeSelf)
             {
                 CloseModPopover();
@@ -1966,12 +2005,6 @@ namespace AchievementsAPI
             }
             if (row.FillRect == null || row.FillGen != gen) yield break;
             SetProgress(row.FillRect, target);
-        }
-
-        private static float EaseOutBack(float t)
-        {
-            const float c = 1.70158f;
-            return 1f + (c + 1f) * Mathf.Pow(t - 1f, 3f) + c * Mathf.Pow(t - 1f, 2f);
         }
     }
 }

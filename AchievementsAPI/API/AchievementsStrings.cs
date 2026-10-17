@@ -60,6 +60,12 @@ public static class AchievementsStrings
     public static readonly StringNames SettingRareDuration = Create("Rare duration");
     public static readonly StringNames SettingPosition = Create("Position");
     public static readonly StringNames SettingTrackpadMode = Create("Trackpad mode");
+    public static readonly StringNames SettingResetAll = Create("Reset all achievements");
+    public static readonly StringNames ResetAllButton = Create("Reset");
+    public static readonly StringNames ResetAllTitle = Create("Wipe everything?");
+    public static readonly StringNames ResetAllBody = Create("All your achievements and progress will be gone for good. No takebacks.");
+    public static readonly StringNames ResetAllConfirm = Create("I'm ready");
+    public static readonly StringNames ResetAllCancel = Create("Nevermind");
 
     public static readonly StringNames ExampleTabName = Create("Example Tab");
     public static readonly StringNames DeveloperTabName = Create("Developer Tab");
