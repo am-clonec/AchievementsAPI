@@ -35,7 +35,7 @@ namespace AchievementsAPI
         private RectTransform _filterRow = null!;
         private ScrollRect _scroll = null!;
         private RectTransform _listContent = null!;
-        private GameObject _listScrollbar = null!;
+        private UnityEngine.UI.Scrollbar _listScrollbar = null!;
         private RectTransform _categoryContent;
         private const int CategoryPageSize = 7;
         private RectTransform _categoryViewport;
@@ -633,7 +633,7 @@ namespace AchievementsAPI
         // Wiki-scroller-style vertical scrollbar: dark translucent track with a
         // light handle that brightens on hover. ScrollRect drives the handle;
         // it auto-hides when the content fits the viewport.
-        private static GameObject CreateScrollbar(Transform parent, ScrollRect scroll,
+        private static UnityEngine.UI.Scrollbar CreateScrollbar(Transform parent, ScrollRect scroll,
             Vector2 offsetMin, Vector2 offsetMax)
         {
             var track = CreateImage(parent, "Scrollbar", ToastSprites.RoundedRectTiny,
@@ -678,9 +678,27 @@ namespace AchievementsAPI
             colors.fadeDuration = 0.1f;
             bar.colors = colors;
 
-            scroll.verticalScrollbar = bar;
-            scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-            return track.gameObject;
+            scroll.onValueChanged.AddListener((UnityAction<Vector2>)(_ =>
+            {
+                if (scroll.gameObject.activeInHierarchy) SyncScrollbar(scroll, bar);
+            }));
+            bar.onValueChanged.AddListener((UnityAction<float>)(v => scroll.verticalNormalizedPosition = v));
+            SyncScrollbar(scroll, bar);
+            return bar;
+        }
+
+        // Manual scrollbar wiring: ScrollRect.verticalScrollbar is never assigned
+        // because its RemoveListener in OnDisable throws under IL2CPP.
+        private static void SyncScrollbar(ScrollRect scroll, UnityEngine.UI.Scrollbar? bar)
+        {
+            if (scroll == null || bar == null || scroll.content == null || scroll.viewport == null) return;
+            var contentHeight = scroll.content.rect.height;
+            var viewHeight = scroll.viewport.rect.height;
+            var scrollable = contentHeight > viewHeight + 0.5f;
+            if (bar.gameObject.activeSelf != scrollable) bar.gameObject.SetActive(scrollable);
+            if (!scrollable) return;
+            bar.size = Mathf.Clamp01(viewHeight / contentHeight);
+            bar.SetValueWithoutNotify(Mathf.Clamp01(scroll.verticalNormalizedPosition));
         }
 
         [HideFromIl2Cpp]
@@ -1126,7 +1144,8 @@ namespace AchievementsAPI
 
         private void RebuildList()
         {
-            var counts = EnumerateAchievements().Select(x => x.Achievement).Where(MatchesSearch).ToList();
+            var visible = EnumerateAchievements().ToList();
+            var counts = visible.Select(x => x.Achievement).Where(MatchesSearch).ToList();
             var filterCounts = new[]
             {
                 counts.Count,
@@ -1145,7 +1164,7 @@ namespace AchievementsAPI
             var filter = _filter;
             // Grouped by the mod that owns each achievement; headers only when the
             // current view mixes several mods.
-            var allGroups = EnumerateAchievements()
+            var allGroups = visible
                 .GroupBy(x => x.Tab.ModName)
                 .ToList();
             var groups = allGroups
@@ -1538,7 +1557,8 @@ namespace AchievementsAPI
         {
             var listsVisible = page == null;
             _scroll.gameObject.SetActive(listsVisible);
-            _listScrollbar?.SetActive(listsVisible);
+            _listScrollbar?.gameObject.SetActive(listsVisible);
+            if (listsVisible) SyncScrollbar(_scroll, _listScrollbar);
             _filterRow.gameObject.SetActive(listsVisible);
             _toolbar?.gameObject.SetActive(listsVisible);
             _settingsPanel?.SetActive(page == _settingsPanel);

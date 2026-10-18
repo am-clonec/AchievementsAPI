@@ -40,15 +40,19 @@ public static class AchievementLifecycle
 
     private static void ResetProgressPersistence(System.Func<CountAchievement, bool> predicate)
     {
+        var any = false;
         foreach (var achievement in AchievementsManager.Tabs
                      .SelectMany(tab => tab.GetAchievements())
                      .OfType<CountAchievement>())
         {
             if (achievement.CurrentValue != achievement.RequiredValue && predicate(achievement))
             {
-                AchievementStorage.AchievementDataReset(achievement);
+                AchievementStorage.AchievementDataReset(achievement, 0, null, false);
+                any = true;
             }
         }
+
+        if (any) AchievementStorage.Save();
     }
 
     private static void ResetTriggered(AchResetTrigger trigger)

@@ -20,7 +20,18 @@ public static class AchievementsManager
     /// True while achievement unlocks and progress are suppressed: in freeplay, or when any
     /// <see cref="UnlockBlockers"/> predicate returns true.
     /// </summary>
-    public static bool UnlockingBlocked => TutorialManager.InstanceExists || UnlockBlockers.Any(blocker => blocker());
+    public static bool UnlockingBlocked
+    {
+        get
+        {
+            if (TutorialManager.InstanceExists) return true;
+            foreach (var blocker in UnlockBlockers)
+            {
+                if (blocker()) return true;
+            }
+            return false;
+        }
+    }
 
     /// <summary>
     /// Shared categories shown in the Achievements Menu, seeded with the built-ins from

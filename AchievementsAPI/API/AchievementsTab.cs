@@ -15,6 +15,7 @@ public abstract class AchievementsTab
 {
     private readonly List<BaseAchievement> _softAchievements = new();
     private List<BaseAchievement>? _propertyAchievements;
+    private List<BaseAchievement>? _allAchievements;
 
     /// <summary>
     /// Registers an achievement on this tab at runtime, without needing a property on the tab class.
@@ -25,6 +26,7 @@ public abstract class AchievementsTab
     {
         if (GetAchievements().Any(x => x.Id == achievement.Id)) return;
         _softAchievements.Add(achievement);
+        _allAchievements = null;
         AchievementStorage.AchievementStorageGet(achievement);
     }
 
@@ -41,11 +43,12 @@ public abstract class AchievementsTab
             .Cast<BaseAchievement>()
             .ToList();
 
-        return _propertyAchievements
+        _allAchievements ??= _propertyAchievements
             .Concat(_softAchievements)
             .GroupBy(x => x.Id)
             .Select(x => x.First())
             .ToList();
+        return _allAchievements;
     }
 
     /// <summary>
