@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Reactor.Localization.Utilities;
 using UnityEngine;
 
 namespace AchievementsAPI.API;
@@ -53,7 +52,7 @@ public sealed class AchievementCategory
     /// <param name="icon">Lazy icon provider; null falls back to the API trophy.</param>
     /// <param name="order">Sort order in the left column; built-ins use 0-30.</param>
     public AchievementCategory(string id, string name, Func<Sprite?>? icon = null, int order = 100)
-        : this(id, CustomStringName.CreateAndRegister(name), icon, order)
+        : this(id, Strings.Register(name), icon, order)
     {
     }
 

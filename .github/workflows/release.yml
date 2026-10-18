@@ -61,8 +61,10 @@ jobs:
         run: |
           mkdir -p release
           cp AchievementsAPI/bin/Release/net6.0/AchievementsAPI.dll release/
+          cp AchievementsAPI.VF/bin/Release/net6.0/AchievementsAPI.dll release/AchievementsAPI-VF.dll
           # The package name carries the version, so this also proves the tag was applied to the build.
           cp "artifacts/CloneC.AchievementsAPI.${VERSION}.nupkg" release/
+          cp "artifacts/CloneC.AchievementsAPI.VentFramework.${VERSION}.nupkg" release/
           (cd release && sha256sum -- * > SHA256SUMS.txt && cat SHA256SUMS.txt)
 
       - uses: actions/upload-artifact@v4

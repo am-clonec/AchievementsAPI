@@ -90,6 +90,15 @@ Unlock with `achievement.Unlock()`; count achievements unlock on their own via `
 
 The solution targets .NET 6: `dotnet build AchievementsAPI.sln`. CI runs `build.cake` and uploads `AchievementsAPI.dll` as an artifact; pushing a `vX.Y.Z` tag publishes a GitHub release (see [docs/building.md](docs/building.md#releases)).
 
+## Reactor vs VentFramework builds
+
+The same source builds two flavors of the plugin, both named `AchievementsAPI.dll` with the same BepInEx plugin id — install only one:
+
+- **Reactor** (`AchievementsAPI/AchievementsAPI.csproj`, package `CloneC.AchievementsAPI`): the standard build; requires the Reactor mod.
+- **VentFramework** (`AchievementsAPI.VF/AchievementsAPI.VF.csproj`, package `CloneC.AchievementsAPI.VentFramework`): the same feature set against VentFramework (`com.discussions.VentLib`); no Reactor dependency.
+
+Set `-p:AmongUs=` / `-p:AmongUsVF=` to copy the respective DLL into a game install on build. See [docs/building.md](docs/building.md#two-builds-reactor--ventframework).
+
 ## Credits
 
 - **satire ([rewalo](https://github.com/rewalo))**: UI and toast design/implementation, animations, and optimizations

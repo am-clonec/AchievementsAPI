@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../AchievementsAPI.Shared.props" />
+
+    <PropertyGroup>
+        <AssemblyName>AchievementsAPI</AssemblyName>
+        <RootNamespace>AchievementsAPI</RootNamespace>
+        <PackageId>CloneC.AchievementsAPI.VentFramework</PackageId>
+        <DefineConstants>$(DefineConstants);VENT_FRAMEWORK</DefineConstants>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="../AchievementsAPI/**/*.cs" Exclude="../AchievementsAPI/obj/**;../AchievementsAPI/bin/**;../AchievementsAPI/Backend/Reactor/**" />
+        <EmbeddedResource Include="../AchievementsAPI/Resources/*.bundle" LogicalName="AchievementsAPI.Resources.%(Filename)%(Extension)" />
+        <Reference Include="VentFrameworkContinued">
+            <HintPath>../lib/VentFrameworkContinued.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+
+    <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUsVF)' != ''">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUsVF)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
+    </Target>
+</Project>

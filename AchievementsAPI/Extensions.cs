@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using Reactor.Utilities;
-using Reactor.Utilities.Extensions;
 using UnityEngine;
 
 // Completely stole this from MiraAPI, thanks hehe

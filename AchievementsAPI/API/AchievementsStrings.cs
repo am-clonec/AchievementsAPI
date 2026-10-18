@@ -1,4 +1,3 @@
-using Reactor.Localization.Utilities;
 
 namespace AchievementsAPI.API;
 
@@ -70,7 +69,7 @@ public static class AchievementsStrings
     public static readonly StringNames ExampleTabName = Create("Example Tab");
     public static readonly StringNames DeveloperTabName = Create("Developer Tab");
 
-    private static StringNames Create(string text) => CustomStringName.CreateAndRegister(text);
+    private static StringNames Create(string text) => Strings.Register(text);
 
     /// <summary>
     /// The <see cref="StringNames"/> of a rarity level.

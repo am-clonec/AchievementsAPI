@@ -1,7 +1,11 @@
 using System.Linq;
+#if !VENT_FRAMEWORK
 using Hazel;
 using Reactor.Networking.Attributes;
 using Reactor.Networking.Rpc;
+#else
+using VentLib.Networking.RPC.Attributes;
+#endif
 
 namespace AchievementsAPI.API;
 
@@ -24,8 +28,22 @@ public static class DeveloperPresence
     {
         if (string.IsNullOrEmpty(LocalDeveloperName)) return;
         if (PlayerControl.LocalPlayer == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.AmConnected) return;
+#if VENT_FRAMEWORK
+        AnnounceDeveloperRpc(LocalDeveloperName);
+#else
         Rpc<AnnounceDeveloperRpc>.Instance.Send(PlayerControl.LocalPlayer, LocalDeveloperName);
+#endif
     }
+
+#if VENT_FRAMEWORK
+    private const uint RpcId = 0xAC410001;
+
+    // VentLib intercepts the call and sends it; ExecuteNever means it never runs locally,
+    // matching Reactor's RpcLocalHandling.None.
+    [ModRPC(RpcId, RpcActors.Everyone, RpcActors.Everyone, MethodInvocation.ExecuteNever)]
+    private static void AnnounceDeveloperRpc(string name) =>
+        OnDeveloperAnnounced(VentLib.Vents.GetLastSender(RpcId), name);
+#endif
 
     internal static void OnDeveloperAnnounced(PlayerControl sender, string name)
     {
@@ -44,6 +62,7 @@ public static class DeveloperPresence
     }
 }
 
+#if !VENT_FRAMEWORK
 [RegisterCustomRpc(0)]
 internal sealed class AnnounceDeveloperRpc(AchievementsAPIPlugin plugin, uint id)
     : PlayerCustomRpc<AchievementsAPIPlugin, string>(plugin, id)
@@ -57,3 +76,4 @@ internal sealed class AnnounceDeveloperRpc(AchievementsAPIPlugin plugin, uint id
     public override void Handle(PlayerControl innerNetObject, string? data) =>
         DeveloperPresence.OnDeveloperAnnounced(innerNetObject, data ?? string.Empty);
 }
+#endif

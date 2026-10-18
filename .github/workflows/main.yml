@@ -33,5 +33,10 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: AchievementsAPI.dll
+          name: AchievementsAPI
           path: AchievementsAPI/bin/Release/net6.0/AchievementsAPI.dll
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AchievementsAPI-VF
+          path: AchievementsAPI.VF/bin/Release/net6.0/AchievementsAPI.dll

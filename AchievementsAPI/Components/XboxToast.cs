@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AchievementsAPI.API;
 using AchievementsAPI.Patches.MainMenu;
-using Reactor.Utilities;
-using Reactor.Utilities.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

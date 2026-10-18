@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BepInEx.Unity.IL2CPP;
-using Reactor.Localization.Utilities;
 
 namespace AchievementsAPI.API;
 
@@ -51,7 +50,7 @@ public static class AchievementsManager
     /// </summary>
     public static AchievementCategory GetOrCreateCategory(string id, string name, Func<UnityEngine.Sprite?>? icon = null, int order = 100)
     {
-        return GetOrCreateCategory(id, CustomStringName.CreateAndRegister(name), icon, order);
+        return GetOrCreateCategory(id, Strings.Register(name), icon, order);
     }
 
     /// <summary>

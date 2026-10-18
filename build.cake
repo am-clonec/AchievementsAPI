@@ -36,13 +36,16 @@ Task("Pack")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    DotNetPack("./AchievementsAPI/AchievementsAPI.csproj", new DotNetPackSettings
+    foreach (var project in new[] { "./AchievementsAPI/AchievementsAPI.csproj", "./AchievementsAPI.VF/AchievementsAPI.VF.csproj" })
     {
-        Configuration = "Release",
-        NoBuild = true,
-        OutputDirectory = "./artifacts",
-        MSBuildSettings = VersionSettings()
-    });
+        DotNetPack(project, new DotNetPackSettings
+        {
+            Configuration = "Release",
+            NoBuild = true,
+            OutputDirectory = "./artifacts",
+            MSBuildSettings = VersionSettings()
+        });
+    }
 });
 
 RunTarget(target);

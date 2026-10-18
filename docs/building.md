@@ -8,14 +8,23 @@ Notes for working on the API itself, as opposed to building against it.
 AchievementsAPI.sln
 ├── AchievementsAPI/              the mod
 │   ├── API/                      the public surface (tabs, achievements, storage, config, toasts)
+│   ├── Backend/                  per-backend façades (Reactor/ and VentFramework/)
 │   ├── Components/               Unity-side UI: menu panels, the Xbox-style toast, input handling
 │   ├── Patches/                  Harmony patches (lifecycle events, menu button, options menu)
 │   ├── Resources/                embedded png/wav assets and the UI asset bundles
 │   └── DeveloperTab.cs, ExampleTab.cs   built-in tabs
-└── AchievementsAPI.Developer/    the developer-only companion plugin (below)
+├── AchievementsAPI.VF/           VentFramework build of the mod (compiles AchievementsAPI/**/*.cs)
+├── AchievementsAPI.Developer/    the developer-only companion plugin (below)
+└── AchievementsAPI.Developer.VF/ VentFramework build of the developer plugin
 ```
 
-The API targets .NET 6 against `AmongUs.GameLibs.Steam` and depends on Reactor and BepInEx IL2CPP (see `AchievementsAPI.csproj`; the extra feeds live in `nuget.config`). UI prefabs ship as platform-specific asset bundles (`achievements-win.bundle`, `achievements-android.bundle`) loaded at runtime by `Assets.cs`.
+The API targets .NET 6 against `AmongUs.GameLibs.Steam` and depends on Reactor and BepInEx IL2CPP (see `AchievementsAPI.csproj`; the extra feeds live in `nuget.config`). UI prefabs ship as platform-specific asset bundles (`achievements-win-x64.bundle`, `achievements-android-x64.bundle`) loaded at runtime by `Assets.cs`.
+
+## Two builds: Reactor / VentFramework
+
+`AchievementsAPI` and `AchievementsAPI.VF` compile the same sources (minus the other backend's folder under `Backend/`) into two `AchievementsAPI.dll`s with the same BepInEx plugin id. The Reactor build is unchanged; the VF build links `lib/VentFrameworkContinued.dll` (`Private=false` — resolved from BepInEx/plugins at runtime, not copied) and gets its coroutine runner, asset-bundle loading and custom `StringNames` from `Backend/VentFramework/`. `#if VENT_FRAMEWORK` appears only in `AchievementsAPIPlugin.cs`, `API/DeveloperPresence.cs` and the developer plugin.
+
+Pick the DLL matching the framework your mod set uses — since the ids are identical, install only one.
 
 ## Building
 
@@ -23,7 +32,7 @@ The API targets .NET 6 against `AmongUs.GameLibs.Steam` and depends on Reactor a
 dotnet build AchievementsAPI.sln
 ```
 
-Set the `AmongUs` MSBuild property to a game install and the build copies the DLL into `BepInEx/plugins/` automatically:
+Set the `AmongUs` MSBuild property to a game install and the build copies the DLL into `BepInEx/plugins/` automatically (`AmongUsVF` does the same for the VentFramework projects, so a dev with two installs can target each):
 
 ```
 dotnet build AchievementsAPI.sln -p:AmongUs="C:\Program Files (x86)\Steam\steamapps\common\Among Us"
@@ -33,7 +42,7 @@ Versions come from `build.cake`: local builds are `{VersionPrefix}-dev` (`2.0.0-
 
 ## CI
 
-`.github/workflows/main.yml` builds pushes and PRs to `master` with Cake on Ubuntu and uploads `AchievementsAPI.dll` as an artifact. `vf.yml` does the same for the `vf` branch, producing `AchievementsAPI-VF.dll`.
+`.github/workflows/main.yml` builds pushes and PRs to `master` with Cake on Ubuntu and uploads two artifacts: `AchievementsAPI` (the Reactor DLL) and `AchievementsAPI-VF` (the VentFramework DLL).
 
 ## Releases
 
@@ -41,7 +50,7 @@ Pushing a tag of the form `vMAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH-prerelease
 
 1. validates the tag format and derives the version from it,
 2. builds and packs with `build.cake --target=Pack`,
-3. creates a GitHub release named after the tag with auto-generated notes (categories come from `.github/release.yml`; tags with a prerelease suffix are marked as pre-releases), attaching `AchievementsAPI.dll`, `CloneC.AchievementsAPI.{version}.nupkg` and `SHA256SUMS.txt`,
+3. creates a GitHub release named after the tag with auto-generated notes (categories come from `.github/release.yml`; tags with a prerelease suffix are marked as pre-releases), attaching `AchievementsAPI.dll`, `AchievementsAPI-VF.dll`, `CloneC.AchievementsAPI.{version}.nupkg`, `CloneC.AchievementsAPI.VentFramework.{version}.nupkg` and `SHA256SUMS.txt`,
 4. pushes the package to nuget.org if a `NUGET_API_KEY` repository secret is configured (skipped otherwise).
 
 To cut a release:

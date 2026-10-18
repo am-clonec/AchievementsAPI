@@ -1,7 +1,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Reactor.Localization.Utilities;
     using UnityEngine;
 
     namespace AchievementsAPI.API;
@@ -292,8 +291,8 @@
         /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
         public BaseAchievement(string name, string description, string iconPath, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
-            Name = CustomStringName.CreateAndRegister(name);
-            Description = CustomStringName.CreateAndRegister(description);
+            Name = Strings.Register(name);
+            Description = Strings.Register(description);
             IconPath = iconPath;
             Assembly = assembly ?? Assembly.GetCallingAssembly();
             _sprite = SpriteTools.LoadSpriteFromPath(IconPath, Assembly, 100);
@@ -322,8 +321,8 @@
         /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
         public BaseAchievement(string name, string description, Sprite icon, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
-            Name = CustomStringName.CreateAndRegister(name);
-            Description = CustomStringName.CreateAndRegister(description);
+            Name = Strings.Register(name);
+            Description = Strings.Register(description);
             Assembly = assembly ?? Assembly.GetCallingAssembly();
             _sprite = icon;
             Id = BuildId(Assembly, name);
@@ -350,8 +349,8 @@
         /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
         public BaseAchievement(string name, string description, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
-            Name = CustomStringName.CreateAndRegister(name);
-            Description = CustomStringName.CreateAndRegister(description);
+            Name = Strings.Register(name);
+            Description = Strings.Register(description);
             Assembly = assembly ?? Assembly.GetCallingAssembly();
             Id = BuildId(Assembly, name);
             Rarity = rarity;

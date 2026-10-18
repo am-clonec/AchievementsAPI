@@ -1,5 +1,4 @@
 using System;
-using Reactor.Localization.Utilities;
 using UnityEngine;
 
 namespace AchievementsAPI.API;
@@ -52,7 +51,7 @@ public class SoftAchievementsTab : AchievementsTab
     /// headers; null uses the tab icon.</param>
     public SoftAchievementsTab(string name, Color? tabColor = null, Sprite? icon = null,
         string? categoryId = null, string? modName = null, Func<Sprite?>? modIcon = null)
-        : this(CustomStringName.CreateAndRegister(name), tabColor, icon, categoryId, modName, modIcon)
+        : this(Strings.Register(name), tabColor, icon, categoryId, modName, modIcon)
     {
     }
 
