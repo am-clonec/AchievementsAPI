@@ -18,7 +18,7 @@ public class Assets
 
     private static AudioClip? _rareChime;
     /// <summary>
-    /// The chime played when a rare (rarity above 0) achievement unlock toast appears.
+    /// The chime played when an epic or legendary (rarity 2 or above) achievement unlock toast appears.
     /// </summary>
     public static AudioClip? RareChime => Clip(ref _rareChime, "RareChime");
 

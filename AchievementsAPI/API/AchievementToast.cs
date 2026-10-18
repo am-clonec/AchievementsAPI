@@ -118,14 +118,14 @@ public class AchievementToast
     }
 
     /// <summary>
-    /// Plays the unlock chime for the given rarity: the rare chime when the
-    /// rarity is above 0 (falling back to the lock chime if it failed to
-    /// load), the standard lock chime otherwise.
+    /// Plays the unlock chime for the given rarity: the rare chime for epic
+    /// and legendary achievements (rarity 2 or above, falling back to the lock
+    /// chime if it failed to load), the standard lock chime otherwise.
     /// </summary>
     public static void PlayUnlockSound(int rarity)
     {
         if (!AchievementsConfig.ToastSoundEnabled.Value) return;
-        var clip = rarity > 0 ? Assets.RareChime ?? Assets.LockChime : Assets.LockChime;
+        var clip = rarity >= 2 ? Assets.RareChime ?? Assets.LockChime : Assets.LockChime;
         if (clip == null) return;
         // Unity null check: a destroyed source is recreated
         if (_chimeSource == null) _chimeSource = CreateChimeSource();
