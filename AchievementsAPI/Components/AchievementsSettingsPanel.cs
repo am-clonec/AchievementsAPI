@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using static AchievementsAPI.MenuUi;
+using UnityEngine.EventSystems;
 
 namespace AchievementsAPI;
 
@@ -42,13 +43,13 @@ public static class AchievementsSettingsPanel
         CreateToggleRow(CreateRowStrip(rect, rowsTop), AchievementsStrings.GetText(AchievementsStrings.SettingToasts), AchievementsConfig.ToastsEnabled);
         CreateToggleRow(CreateRowStrip(rect, rowsTop - 76f), AchievementsStrings.GetText(AchievementsStrings.SettingSound), AchievementsConfig.ToastSoundEnabled);
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 152f), AchievementsStrings.GetText(AchievementsStrings.SettingVolume), AchievementsConfig.ToastVolume, 0f, 1f,
-            v => $"{Mathf.RoundToInt(v * 100f)}%");
+            v => $"{Mathf.RoundToInt(v * 100f)}%", onStep: AchievementToast.PlayVolumePreview);
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 228f), AchievementsStrings.GetText(AchievementsStrings.SettingDuration), AchievementsConfig.ToastDuration, 1f, 10f,
             v => $"{v:0.0}s");
         CreateSliderRow(CreateRowStrip(rect, rowsTop - 304f), AchievementsStrings.GetText(AchievementsStrings.SettingRareDuration), AchievementsConfig.RareToastDuration, 1f, 10f,
             v => $"{v:0.0}s");
         CreateCycleRow(CreateRowStrip(rect, rowsTop - 380f), AchievementsStrings.GetText(AchievementsStrings.SettingPosition), AchievementsConfig.Position);
-        CreateToggleRow(CreateRowStrip(rect, rowsTop - 456f), AchievementsStrings.GetText(AchievementsStrings.SettingTrackpadMode), AchievementsConfig.TrackpadMode);
+        CreateToggleRowWithHelp(CreateRowStrip(rect, rowsTop - 456f), AchievementsStrings.GetText(AchievementsStrings.SettingTrackpadMode), AchievementsConfig.TrackpadMode, "Open achievements from a toast with a normal click instead of middle-click (for trackpads).");
         CreateActionRow(CreateRowStrip(rect, rowsTop - 532f), AchievementsStrings.GetText(AchievementsStrings.SettingResetAll),
             AchievementsStrings.GetText(AchievementsStrings.ResetAllButton), onResetAll);
 
@@ -86,6 +87,97 @@ public static class AchievementsSettingsPanel
         rect.sizeDelta = new Vector2(320f, 32f);
     }
 
+    private static void CreateRowLabelWithHelp(Transform strip, string text, string helpText)
+    {
+        var label = CreateText(strip, "Label", text, 24f, Color.white);
+        var rect = label.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0f, 0.5f);
+        rect.pivot = new Vector2(0f, 0.5f);
+        rect.anchoredPosition = new Vector2(24f, 0f);
+
+        // Auto-size the label to fit the text
+        label.ForceMeshUpdate();
+        var preferredSize = label.GetPreferredValues(text);
+        rect.sizeDelta = new Vector2(preferredSize.x, 32f);
+
+        var helpIcon = CreateImage(rect, "HelpIcon", ToastSprites.Circle, new Color32(112, 112, 112, 255));
+        var helpRect = helpIcon.rectTransform;
+        helpRect.anchorMin = helpRect.anchorMax = new Vector2(1f, 0.5f);
+        helpRect.pivot = new Vector2(0f, 0.5f);
+        helpRect.anchoredPosition = new Vector2(8f, 0f);
+        helpRect.sizeDelta = new Vector2(20f, 20f);
+
+        var helpTextObj = CreateText(helpRect, "HelpText", "?", 14f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center);
+        helpTextObj.rectTransform.anchorMin = Vector2.zero;
+        helpTextObj.rectTransform.anchorMax = Vector2.one;
+        helpTextObj.rectTransform.offsetMin = Vector2.zero;
+        helpTextObj.rectTransform.offsetMax = Vector2.zero;
+
+        var popover = CreateImage(strip, "HelpPopover", ToastSprites.RoundedRectTiny, new Color32(30, 30, 30, 245));
+        popover.type = Image.Type.Sliced;
+        var popoverRect = popover.rectTransform;
+        popoverRect.anchorMin = popoverRect.anchorMax = new Vector2(0f, 0.5f);
+        popoverRect.pivot = new Vector2(0f, 0.5f);
+        popoverRect.anchoredPosition = new Vector2(24f + rect.sizeDelta.x + 35f, 0f);
+        popoverRect.sizeDelta = new Vector2(280f, 80f);
+        popover.gameObject.SetActive(false);
+
+        var popoverContent = new GameObject("PopoverContent");
+        var popoverContentRect = popoverContent.AddComponent<RectTransform>();
+        popoverContentRect.SetParent(popoverRect, false);
+        popoverContentRect.anchorMin = Vector2.zero;
+        popoverContentRect.anchorMax = Vector2.one;
+        popoverContentRect.offsetMin = new Vector2(10f, 10f);
+        popoverContentRect.offsetMax = new Vector2(-10f, -10f);
+
+        var popoverText = CreateText(popoverContentRect, "PopoverText", helpText, 18f, new Color32(220, 220, 220, 255));
+        popoverText.enableWordWrapping = true;
+        popoverText.overflowMode = TextOverflowModes.Overflow;
+        var popoverTextRect = popoverText.rectTransform;
+        popoverTextRect.anchorMin = Vector2.zero;
+        popoverTextRect.anchorMax = Vector2.one;
+        popoverTextRect.offsetMin = Vector2.zero;
+        popoverTextRect.offsetMax = Vector2.zero;
+
+        bool IsOverHelpOrPopover(Vector2 pos)
+        {
+            return RectTransformUtility.RectangleContainsScreenPoint(helpRect, pos, null)
+                || RectTransformUtility.RectangleContainsScreenPoint(popoverRect, pos, null);
+        }
+
+        var trigger = helpIcon.gameObject.AddComponent<EventTrigger>();
+        var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        enter.callback.AddListener((UnityAction<BaseEventData>)(_ =>
+        {
+            popover.gameObject.SetActive(true);
+            popover.transform.SetAsLastSibling();
+        }));
+        trigger.triggers.Add(enter);
+
+        var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        exit.callback.AddListener((UnityAction<BaseEventData>)(data =>
+        {
+            var pointer = data.TryCast<PointerEventData>();
+            if (pointer != null && !IsOverHelpOrPopover(pointer.position))
+            {
+                popover.gameObject.SetActive(false);
+            }
+        }));
+        trigger.triggers.Add(exit);
+
+        var popoverTrigger = popover.gameObject.AddComponent<EventTrigger>();
+        var popoverExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        popoverExit.callback.AddListener((UnityAction<BaseEventData>)(data =>
+        {
+            var pointer = data.TryCast<PointerEventData>();
+            if (pointer != null && !IsOverHelpOrPopover(pointer.position))
+            {
+                popover.gameObject.SetActive(false);
+            }
+        }));
+        popoverTrigger.triggers.Add(popoverExit);
+    }
+
     private static void ApplySwitchState(RectTransform knob, Image track, bool on)
     {
         knob.anchorMin = knob.anchorMax = new Vector2(on ? 1f : 0f, 0.5f);
@@ -97,6 +189,46 @@ public static class AchievementsSettingsPanel
     private static void CreateToggleRow(Transform strip, string label, ConfigEntry<bool> entry)
     {
         CreateRowLabel(strip, label);
+
+        var track = CreateImage(strip, $"{label}Track", ToastSprites.RoundedRectTiny, TrackOffColor);
+        track.type = Image.Type.Sliced;
+        var trackRect = track.rectTransform;
+        trackRect.anchorMin = trackRect.anchorMax = new Vector2(1f, 0.5f);
+        trackRect.pivot = new Vector2(1f, 0.5f);
+        trackRect.anchoredPosition = new Vector2(-24f, 0f);
+        trackRect.sizeDelta = new Vector2(64f, 32f);
+
+        var knob = CreateImage(trackRect, "Knob", ToastSprites.RoundedRectTiny, Color.white);
+        knob.type = Image.Type.Sliced;
+        knob.raycastTarget = false;
+        var knobRect = knob.rectTransform;
+        knobRect.sizeDelta = new Vector2(34f, 24f);
+
+        var toggle = track.gameObject.AddComponent<Toggle>();
+        toggle.graphic = null;
+        toggle.targetGraphic = track;
+        toggle.transition = Selectable.Transition.ColorTint;
+        var colors = toggle.colors;
+        colors.normalColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+        colors.highlightedColor = Color.white;
+        colors.pressedColor = Color.white;
+        colors.selectedColor = Color.white;
+        colors.colorMultiplier = 1f;
+        colors.fadeDuration = 0.1f;
+        toggle.colors = colors;
+        toggle.isOn = entry.Value;
+        ApplySwitchState(knobRect, track, entry.Value);
+        toggle.onValueChanged.AddListener((UnityAction<bool>)(v =>
+        {
+            entry.Value = v;
+            ApplySwitchState(knobRect, track, v);
+        }));
+        AttachGameSounds(track.gameObject);
+    }
+
+    private static void CreateToggleRowWithHelp(Transform strip, string label, ConfigEntry<bool> entry, string helpText)
+    {
+        CreateRowLabelWithHelp(strip, label, helpText);
 
         var track = CreateImage(strip, $"{label}Track", ToastSprites.RoundedRectTiny, TrackOffColor);
         track.type = Image.Type.Sliced;
@@ -242,7 +374,7 @@ public static class AchievementsSettingsPanel
     }
 
     private static void CreateSliderRow(Transform strip, string label, ConfigEntry<float> entry,
-        float min, float max, System.Func<float, string> format)
+        float min, float max, System.Func<float, string> format, System.Action<float>? onStep = null)
     {
         CreateRowLabel(strip, label);
 
@@ -288,10 +420,22 @@ public static class AchievementsSettingsPanel
         slider.maxValue = max;
         slider.wholeNumbers = false;
         slider.value = entry.Value;
+        // The config file hits disk on every `entry.Value` set, so writes are
+        // debounced to label-visible steps plus one final write on release.
+        var lastText = format(entry.Value);
         slider.onValueChanged.AddListener((UnityAction<float>)(v =>
         {
+            var text = format(v);
+            if (text == lastText) return;
+            lastText = text;
+            valueLabel.text = text;
             entry.Value = v;
-            valueLabel.text = format(v);
+            onStep?.Invoke(v);
         }));
+
+        var trigger = bg.gameObject.GetComponent<EventTrigger>() ?? bg.gameObject.AddComponent<EventTrigger>();
+        var pointerUp = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
+        pointerUp.callback.AddListener((UnityAction<BaseEventData>)(_ => entry.Value = slider.value));
+        trigger.triggers.Add(pointerUp);
     }
 }

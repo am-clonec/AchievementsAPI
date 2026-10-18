@@ -23,42 +23,130 @@ public class CountAchievement : BaseAchievement
     /// Whether to hide the achievement's progress (if the achievement is hidden)
     /// </summary>
     public bool HideProgress;
-    public CountAchievement(StringNames name, StringNames description, string iconPath, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, iconPath, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name.</param>
+    /// <param name="description">The achievement's description.</param>
+    /// <param name="iconPath">The path to the achievement's icon.</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(StringNames name, StringNames description, string iconPath, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, iconPath, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;
         ProgressPersists = progressPersists;
         HideProgress = hideProgress;
     }
-    public CountAchievement(StringNames name, StringNames description, Sprite icon, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, icon, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name.</param>
+    /// <param name="description">The achievement's description.</param>
+    /// <param name="icon">The achievement's icon sprite.</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(StringNames name, StringNames description, Sprite icon, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, icon, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;
         ProgressPersists = progressPersists;
         HideProgress = hideProgress;
     }
-    public CountAchievement(StringNames name, StringNames description, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name.</param>
+    /// <param name="description">The achievement's description.</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(StringNames name, StringNames description, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;
         ProgressPersists = progressPersists;
         HideProgress = hideProgress;
     }
-    public CountAchievement(string name, string description, string iconPath, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, iconPath, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name (plain text).</param>
+    /// <param name="description">The achievement's description (plain text).</param>
+    /// <param name="iconPath">The path to the achievement's icon.</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(string name, string description, string iconPath, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, iconPath, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;
         ProgressPersists = progressPersists;
         HideProgress = hideProgress;
     }
-    public CountAchievement(string name, string description, Sprite icon, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, icon, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name (plain text).</param>
+    /// <param name="description">The achievement's description (plain text).</param>
+    /// <param name="icon">The achievement's icon sprite.</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(string name, string description, Sprite icon, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, icon, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;
         ProgressPersists = progressPersists;
         HideProgress = hideProgress;
     }
-    public CountAchievement(string name, string description, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null) : base(name, description, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly())
+    /// <summary>
+    /// Creates a new count achievement with the specified properties.
+    /// </summary>
+    /// <param name="name">The achievement's name (plain text).</param>
+    /// <param name="description">The achievement's description (plain text).</param>
+    /// <param name="currentValue">The current progress value.</param>
+    /// <param name="requiredValue">The required progress to unlock.</param>
+    /// <param name="progressPersists">How progress persists between games.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="hideProgress">Whether to hide the progress bar for hidden achievements.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+    public CountAchievement(string name, string description, int currentValue, int requiredValue, AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false, bool hideRarity = false, bool hideProgress = false, System.Reflection.Assembly? assembly = null, string[]? tags = null) : base(name, description, rarity, hidden, hideRarity, assembly ?? System.Reflection.Assembly.GetCallingAssembly(), tags)
     {
         CurrentValue = currentValue;
         RequiredValue = requiredValue;

@@ -1050,7 +1050,8 @@ namespace AchievementsAPI
             if (_appliedSearch.Length == 0) return true;
             if (a.Hidden && !a.Unlocked) return false;
             return a.GetName()?.Contains(_appliedSearch, StringComparison.OrdinalIgnoreCase) == true
-                || a.GetDescription()?.Contains(_appliedSearch, StringComparison.OrdinalIgnoreCase) == true;
+                || a.GetDescription()?.Contains(_appliedSearch, StringComparison.OrdinalIgnoreCase) == true
+                || a.Tags.Any(t => t.Contains(_appliedSearch, StringComparison.OrdinalIgnoreCase));
         }
 
         // The icon doubles as the clear button once there is text.
@@ -1328,7 +1329,6 @@ namespace AchievementsAPI
             row.Ring = disc.GetComponent<Image>();
 
             var icon = CreateImage(inner, "Icon", null, Color.white);
-            icon.type = Image.Type.Simple;
             icon.preserveAspect = true;
             icon.raycastTarget = false;
             var iconRect = icon.rectTransform;
@@ -1338,14 +1338,13 @@ namespace AchievementsAPI
             row.Icon = icon;
 
             var sub = CreateImage(disc, "SubIcon", null, Color.white);
-            sub.type = Image.Type.Simple;
             sub.preserveAspect = true;
             sub.raycastTarget = false;
             var subRect = sub.rectTransform;
             subRect.anchorMin = subRect.anchorMax = new Vector2(1f, 0f);
-            subRect.pivot = new Vector2(0.5f, 0.5f);
-            subRect.anchoredPosition = new Vector2(-2f, 2f);
-            subRect.sizeDelta = new Vector2(36f, 36f);
+            subRect.pivot = new Vector2(1f, 0f);
+            subRect.anchoredPosition = new Vector2(0f, 0f);
+            subRect.sizeDelta = new Vector2(48f, 48f);
             sub.gameObject.SetActive(false);
             row.SubIcon = sub;
 
@@ -1478,7 +1477,6 @@ namespace AchievementsAPI
             {
                 row.SubIcon.sprite = ToastSprites.TrimTransparent(subIcon);
                 row.SubIcon.rectTransform.localScale = achievement.MenuSubIconScale;
-                row.SubIcon.rectTransform.anchoredPosition = achievement.MenuSubIconOffset;
             }
 
             row.NameText.text = revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement);

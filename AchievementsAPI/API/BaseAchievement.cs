@@ -145,6 +145,11 @@
         /// Whether to hide the achievement's rarity (if the achievement is hidden)
         /// </summary>
         public bool HideRarity;
+        /// <summary>
+        /// Tags for this achievement, used for filtering and searching. Mods can add custom tags
+        /// (e.g. "Imposter", "Glitch") to group achievements by role, modifier, or other criteria.
+        /// </summary>
+        public HashSet<string> Tags = new();
         public Assembly Assembly;
         public string Id;
         /// <summary>
@@ -180,7 +185,18 @@
         /// (see <see cref="AchievementsStrings.GetText"/>).
         /// </summary>
         public string GetDescription() => AchievementsStrings.GetText(Description);
-        public BaseAchievement(StringNames name, StringNames description, string iconPath, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name.</param>
+        /// <param name="description">The achievement's description.</param>
+        /// <param name="iconPath">The path to the achievement's icon.</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(StringNames name, StringNames description, string iconPath, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = name;
             Description = description;
@@ -191,8 +207,26 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
-        public BaseAchievement(StringNames name, StringNames description, Sprite icon, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name.</param>
+        /// <param name="description">The achievement's description.</param>
+        /// <param name="icon">The achievement's icon sprite.</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(StringNames name, StringNames description, Sprite icon, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = name;
             Description = description;
@@ -202,8 +236,25 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
-        public BaseAchievement(StringNames name, StringNames description, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name.</param>
+        /// <param name="description">The achievement's description.</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(StringNames name, StringNames description, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = name;
             Description = description;
@@ -212,8 +263,26 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
-        public BaseAchievement(string name, string description, string iconPath, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name (plain text).</param>
+        /// <param name="description">The achievement's description (plain text).</param>
+        /// <param name="iconPath">The path to the achievement's icon.</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(string name, string description, string iconPath, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = CustomStringName.CreateAndRegister(name);
             Description = CustomStringName.CreateAndRegister(description);
@@ -224,8 +293,26 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
-        public BaseAchievement(string name, string description, Sprite icon, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name (plain text).</param>
+        /// <param name="description">The achievement's description (plain text).</param>
+        /// <param name="icon">The achievement's icon sprite.</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(string name, string description, Sprite icon, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = CustomStringName.CreateAndRegister(name);
             Description = CustomStringName.CreateAndRegister(description);
@@ -235,8 +322,25 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
-        public BaseAchievement(string name, string description, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null)
+        /// <summary>
+        /// Creates a new achievement with the specified properties.
+        /// </summary>
+        /// <param name="name">The achievement's name (plain text).</param>
+        /// <param name="description">The achievement's description (plain text).</param>
+        /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+        /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+        /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+        /// <param name="assembly">The assembly that owns this achievement.</param>
+        /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
+        public BaseAchievement(string name, string description, int rarity = 0, bool hidden = false, bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
         {
             Name = CustomStringName.CreateAndRegister(name);
             Description = CustomStringName.CreateAndRegister(description);
@@ -245,6 +349,13 @@
             Rarity = rarity;
             Hidden = hidden;
             HideRarity = hideRarity;
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    Tags.Add(tag.ToLowerInvariant());
+                }
+            }
         }
 
         // The Id is the stable identity used for storage lookups, so it must not change

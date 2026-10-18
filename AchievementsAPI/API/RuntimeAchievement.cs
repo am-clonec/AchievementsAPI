@@ -33,21 +33,52 @@ public class RuntimeAchievement : BaseAchievement
     public Vector3? MenuSubIconScaleOverride;
     public Vector3? ToastIconOffsetOverride;
 
+    /// <summary>
+    /// Creates a new runtime-configurable achievement.
+    /// </summary>
+    /// <param name="name">The achievement's name.</param>
+    /// <param name="description">The achievement's description.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
     public RuntimeAchievement(StringNames name, StringNames description, int rarity = 0, bool hidden = false,
-        bool hideRarity = false, Assembly? assembly = null)
-        : base(name, description, rarity, hidden, hideRarity, assembly)
+        bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
+        : base(name, description, rarity, hidden, hideRarity, assembly, tags)
     {
     }
 
+    /// <summary>
+    /// Creates a new runtime-configurable achievement.
+    /// </summary>
+    /// <param name="name">The achievement's name (plain text).</param>
+    /// <param name="description">The achievement's description (plain text).</param>
+    /// <param name="icon">The achievement's icon sprite.</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
     public RuntimeAchievement(string name, string description, Sprite icon, int rarity = 0, bool hidden = false,
-        bool hideRarity = false, Assembly? assembly = null)
-        : base(name, description, icon, rarity, hidden, hideRarity, assembly)
+        bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
+        : base(name, description, icon, rarity, hidden, hideRarity, assembly, tags)
     {
     }
 
+    /// <summary>
+    /// Creates a new runtime-configurable achievement.
+    /// </summary>
+    /// <param name="name">The achievement's name (plain text).</param>
+    /// <param name="description">The achievement's description (plain text).</param>
+    /// <param name="rarity">The achievement's rarity (0 = common, 1 = rare, 2 = epic, 3 = legendary).</param>
+    /// <param name="hidden">Whether the achievement is hidden until unlocked.</param>
+    /// <param name="hideRarity">Whether to hide the achievement's rarity.</param>
+    /// <param name="assembly">The assembly that owns this achievement.</param>
+    /// <param name="tags">Optional tags for filtering and searching (e.g. role names, modifier names).</param>
     public RuntimeAchievement(string name, string description, int rarity = 0, bool hidden = false,
-        bool hideRarity = false, Assembly? assembly = null)
-        : base(name, description, rarity, hidden, hideRarity, assembly)
+        bool hideRarity = false, Assembly? assembly = null, string[]? tags = null)
+        : base(name, description, rarity, hidden, hideRarity, assembly, tags)
     {
     }
 
@@ -109,15 +140,15 @@ public class RuntimeCountAchievement : CountAchievement
 
     public RuntimeCountAchievement(StringNames name, StringNames description, int currentValue, int requiredValue,
         AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false,
-        bool hideRarity = false, bool hideProgress = false, Assembly? assembly = null)
-        : base(name, description, currentValue, requiredValue, progressPersists, rarity, hidden, hideRarity, hideProgress, assembly)
+        bool hideRarity = false, bool hideProgress = false, Assembly? assembly = null, string[]? tags = null)
+        : base(name, description, currentValue, requiredValue, progressPersists, rarity, hidden, hideRarity, hideProgress, assembly, tags)
     {
     }
 
     public RuntimeCountAchievement(string name, string description, Sprite icon, int currentValue, int requiredValue,
         AchPersistence progressPersists = AchPersistence.ThroughoutSessions, int rarity = 0, bool hidden = false,
-        bool hideRarity = false, bool hideProgress = false, Assembly? assembly = null)
-        : base(name, description, icon, currentValue, requiredValue, progressPersists, rarity, hidden, hideRarity, hideProgress, assembly)
+        bool hideRarity = false, bool hideProgress = false, Assembly? assembly = null, string[]? tags = null)
+        : base(name, description, icon, currentValue, requiredValue, progressPersists, rarity, hidden, hideRarity, hideProgress, assembly, tags)
     {
     }
 

@@ -57,6 +57,21 @@ public static class AchievementDetailPanel
         iconRect.anchoredPosition = Vector2.zero;
         iconRect.sizeDelta = new Vector2(150f, 150f);
 
+        // Subicon positioned at bottom-right of the disc
+        var subIcon = achievement.MenuSubIcon;
+        if (subIcon != null)
+        {
+            var sub = CreateImage(discRect, "SubIcon", ToastSprites.TrimTransparent(subIcon), Color.white);
+            sub.preserveAspect = true;
+            sub.raycastTarget = false;
+            var subRect = sub.rectTransform;
+            subRect.anchorMin = subRect.anchorMax = new Vector2(1f, 0f);
+            subRect.pivot = new Vector2(1f, 0f);
+            subRect.anchoredPosition = new Vector2(0f, 0f);
+            subRect.sizeDelta = new Vector2(100f, 100f);
+            subRect.localScale = achievement.MenuSubIconScale;
+        }
+
         // Name
         var name = CreateText(rect, "Name",
             revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement),

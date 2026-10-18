@@ -110,6 +110,79 @@ public static class AchievementsManager
         return null;
     }
 
+    /// <summary>
+    /// Finds all achievements that have the specified tag across all tabs.
+    /// </summary>
+    /// <param name="tag">The tag to search for (case-insensitive).</param>
+    /// <returns>A list of achievements with the matching tag.</returns>
+    public static List<(AchievementsTab Tab, BaseAchievement Achievement)> FindAchievementsByTag(string tag)
+    {
+        var results = new List<(AchievementsTab Tab, BaseAchievement Achievement)>();
+        var tagLower = tag.ToLowerInvariant();
+
+        foreach (var tab in Tabs)
+        {
+            foreach (var achievement in tab.GetAchievements())
+            {
+                if (achievement.Tags.Contains(tagLower))
+                {
+                    results.Add((tab, achievement));
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /// <summary>
+    /// Finds all achievements that have any of the specified tags across all tabs.
+    /// </summary>
+    /// <param name="tags">The tags to search for (case-insensitive).</param>
+    /// <returns>A list of achievements with any of the matching tags.</returns>
+    public static List<(AchievementsTab Tab, BaseAchievement Achievement)> FindAchievementsByAnyTag(params string[] tags)
+    {
+        var results = new List<(AchievementsTab Tab, BaseAchievement Achievement)>();
+        var tagsLower = tags.Select(t => t.ToLowerInvariant()).ToHashSet();
+
+        foreach (var tab in Tabs)
+        {
+            foreach (var achievement in tab.GetAchievements())
+            {
+                if (achievement.Tags.Any(t => tagsLower.Contains(t.ToLowerInvariant())))
+                {
+                    results.Add((tab, achievement));
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /// <summary>
+    /// Finds all achievements that have all of the specified tags across all tabs.
+    /// </summary>
+    /// <param name="tags">The tags that must all be present (case-insensitive).</param>
+    /// <returns>A list of achievements with all of the matching tags.</returns>
+    public static List<(AchievementsTab Tab, BaseAchievement Achievement)> FindAchievementsByAllTags(params string[] tags)
+    {
+        var results = new List<(AchievementsTab Tab, BaseAchievement Achievement)>();
+        var tagsLower = tags.Select(t => t.ToLowerInvariant()).ToHashSet();
+
+        foreach (var tab in Tabs)
+        {
+            foreach (var achievement in tab.GetAchievements())
+            {
+                var achievementTagsLower = achievement.Tags.Select(t => t.ToLowerInvariant()).ToHashSet();
+                if (tagsLower.IsSubsetOf(achievementTagsLower))
+                {
+                    results.Add((tab, achievement));
+                }
+            }
+        }
+
+        return results;
+    }
+
     public static void Initialize()
     {
         RegisterTab(new ExampleTab());

@@ -19,6 +19,7 @@ Common constructor options:
 | `hidden` | `false` | Shows as "Hidden Achievement" until unlocked |
 | `hideRarity` | `false` | Hides the rarity tint as well (only relevant when hidden) |
 | `assembly` | calling assembly | Sets the assembly half of the achievement's id |
+| `tags` | `null` | Optional tags for filtering and searching (e.g. role names, modifier names) |
 
 The full identity is `{AssemblyName}_{Name}` and never changes with language, which is what keeps save files stable. The name half is the raw text for string constructors and the enum value for `StringNames` constructors.
 
@@ -27,6 +28,35 @@ The full identity is `{AssemblyName}_{Name}` and never changes with language, wh
 - `Unlock()` flips `Unlocked`, shows the toast (unless `showOnUI: false`) and writes through to storage immediately.
 - `UnlockedAt` is the UTC time the achievement unlocked, or null while locked.
 - `Reset()` returns it to locked (and zeroes progress on count achievements). Set `ResetTrigger` to have this happen automatically; see [game events](game-events.md).
+
+### Tags
+
+Achievements can have tags for filtering and searching. This is useful for grouping achievements by role, modifier, or other criteria. Tags are case-insensitive when searching.
+
+```csharp
+// Adding tags when creating an achievement
+public BaseAchievement ImposterKill = new("Imposter Kill", "Kill as Imposter.", icon,
+    tags: new[] { "Imposter", "Killer" });
+
+// For count achievements
+public CountAchievement FiveKills = new("Five Kills", "Kill 5 players.", icon, 0, 5,
+    tags: new[] { "Imposter", "Killer" });
+```
+
+You can search for achievements by tags using `AchievementsManager`:
+
+```csharp
+// Find all achievements with a specific tag
+var impostorAchievements = AchievementsManager.FindAchievementsByTag("Imposter");
+
+// Find achievements with any of the specified tags
+var killerOrSaboteur = AchievementsManager.FindAchievementsByAnyTag("Killer", "Saboteur");
+
+// Find achievements with all of the specified tags
+var impostorKillers = AchievementsManager.FindAchievementsByAllTags("Imposter", "Killer");
+```
+
+All search methods return a `List<(AchievementsTab Tab, BaseAchievement Achievement)>` containing matching achievements along with their parent tabs.
 
 ### Skeld Points
 
@@ -104,7 +134,8 @@ Beyond the provider and offset-override fields listed above they behave identica
 
 ```csharp
 tab.RegisterAchievement(new RuntimeCountAchievement("Busy Bee", "Complete 10 tasks.", 0, 10,
-    AchPersistence.ThroughoutSessions, rarity: 1, assembly: typeof(MyPlugin).Assembly)
+    AchPersistence.ThroughoutSessions, rarity: 1, assembly: typeof(MyPlugin).Assembly,
+    tags: new[] { "Tasks", "Crewmate" })
 {
     IconProvider = () => MyAssets.LoadSprite("busy-bee"),
 });

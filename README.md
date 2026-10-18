@@ -15,6 +15,7 @@ An Among Us API for registering mod achievements, tracking progress, and display
 - Property-based or runtime achievement registration
 - Progress counters with persistent state
 - Hidden achievements, rarity tiers, and Skeld Points
+- Achievement tags for filtering and searching (e.g. by role or modifier)
 - In-game menu with categories, filters, details, and toast settings
 - Animated toast notifications with sound and swipe-to-dismiss
 - Mouse, keyboard, and controller support
@@ -77,7 +78,7 @@ Unlock with `achievement.Unlock()`; count achievements unlock on their own via `
 **[docs/](docs/README.md)** has the full developer documentation:
 
 - [Getting started](docs/getting-started.md): hard vs soft dependencies, first tab
-- [Defining achievements](docs/achievements.md): rarity, Skeld Points, hidden achievements, sub-icons, art overrides
+- [Defining achievements](docs/achievements.md): rarity, Skeld Points, hidden achievements, sub-icons, art overrides, tags
 - [Tabs and categories](docs/tabs-and-categories.md): discovery, mod grouping, shared categories
 - [Localization](docs/localization.md): `StringNames` and translation packs
 - [Game events](docs/game-events.md): reset triggers, progress persistence, deferred toasts

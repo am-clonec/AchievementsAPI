@@ -86,6 +86,27 @@ public class AchievementToast
     }
 
     private static AudioSource? _chimeSource;
+    private static AudioSource? _previewSource;
+    private static float _lastPreviewTime = float.NegativeInfinity;
+    private const float PreviewInterval = 0.12f;
+
+    /// <summary>
+    /// Plays the short volume tick at <paramref name="volume"/>, at most once every
+    /// <see cref="PreviewInterval"/> seconds so a fast drag sounds like discrete steps
+    /// rather than noise; calls inside that window are dropped.
+    /// </summary>
+    public static void PlayVolumePreview(float volume)
+    {
+        if (Time.unscaledTime - _lastPreviewTime < PreviewInterval) return;
+        var clip = Assets.VolumeTick;
+        if (clip == null) return;
+        _lastPreviewTime = Time.unscaledTime;
+        if (_previewSource == null) _previewSource = CreateChimeSource();
+        _previewSource.Stop();
+        _previewSource.clip = clip;
+        _previewSource.volume = Mathf.Clamp01(volume);
+        _previewSource.Play();
+    }
 
     /// <summary>
     /// Plays the unlock chime, if enabled in the config, through a dedicated
