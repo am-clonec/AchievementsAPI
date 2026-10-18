@@ -185,11 +185,12 @@ public class CountAchievement : BaseAchievement
         {
             Unlock(false, false);
             AchievementStorage.AchievementStorageUpdate(this, value, true);
-            if (showOnUI) AchievementToastQueue.Enqueue(this, true);
+            if (showOnUI && !Hidden) AchievementToastQueue.Enqueue(this, true);
             return;
         }
-        if (showOnUI && !Unlocked && !Hidden) AchievementToastQueue.Enqueue(this, false);
+        if (showOnUI && !Unlocked) AchievementToastQueue.Enqueue(this, false);
         AchievementStorage.AchievementStorageUpdate(this, value, Unlocked);
+        
     }
 }
 
