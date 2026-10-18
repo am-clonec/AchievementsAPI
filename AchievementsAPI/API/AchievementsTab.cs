@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -97,6 +99,11 @@ public abstract class AchievementsTab
     /// <returns></returns>
     public virtual Sprite GetIcon()
     {
+        // The API's own icons ship in the asset bundle rather than as embedded
+        // resources; mod-supplied IconPaths still load from their own assembly.
+        const string prefix = "AchievementsAPI.Resources.";
+        if (IconPath.StartsWith(prefix, StringComparison.Ordinal))
+            return Assets.LoadSprite(Path.GetFileNameWithoutExtension(IconPath));
         return SpriteTools.LoadSpriteFromPath(IconPath, Assembly.GetCallingAssembly(), 100);
     }
 }

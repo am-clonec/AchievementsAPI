@@ -153,8 +153,7 @@ public static class ToastSprites
         _ = CloseX; yield return null;
         _ = WikiPanel; yield return null;
         _ = MenuUi.AchievementIcon;
-        _ = SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.ExampleIcon.png",
-            typeof(ToastSprites).Assembly, 100);
+        _ = Assets.LoadSprite("ExampleIcon");
     }
 
     private static readonly Dictionary<int, Sprite> _trimmed = new();
@@ -272,8 +271,7 @@ public static class ToastSprites
 
     private static Sprite CreateWikiPanel()
     {
-        var tex = SpriteTools.LoadTextureFromResourcePath(
-            "AchievementsAPI.Resources.Menu.png", typeof(ToastSprites).Assembly);
+        var tex = Assets.LoadTexture("Menu");
         tex.DontUnload();
 
         var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),

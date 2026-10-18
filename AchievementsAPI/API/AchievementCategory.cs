@@ -93,6 +93,5 @@ public sealed class AchievementCategory
     }
 
     private static Sprite? _fallback;
-    private static Sprite Fallback => _fallback ??= SpriteTools.LoadSpriteFromPath(
-        "AchievementsAPI.Resources.AchievementsIcon.png", Assembly.GetExecutingAssembly(), 100);
+    private static Sprite Fallback => _fallback ??= Assets.LoadSprite("AchievementsIcon");
 }

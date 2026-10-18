@@ -1471,8 +1471,7 @@ namespace AchievementsAPI
             row.Ring.color = rarity > 0 ? RarityColor(rarity) : RimColor;
 
             var iconSprite = revealed ? achievement.Icon
-                : SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.ExampleIcon.png",
-                    typeof(AchievementsMenu).Assembly, 100);
+                : Assets.LoadSprite("ExampleIcon");
             row.Icon.sprite = ToastSprites.TrimTransparent(iconSprite);
             row.Icon.color = achievement.Unlocked ? Color.white : new Color(0.35f, 0.35f, 0.35f);
 

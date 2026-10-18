@@ -94,7 +94,7 @@ public static class OptionsMenuPatches
         tabButtonRend.transform.SetParent(tabButtonObject.transform);
         tabButtonRend.transform.localPosition = new Vector3(-0.5f, 0, -2);
         tabButtonRend.transform.localScale = new Vector3(0.2f, 0.2f, 1);
-        tabButtonRend.sprite = SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.AchievementsIcon.png", Assembly.GetCallingAssembly(), 100);
+        tabButtonRend.sprite = Assets.LoadSprite("AchievementsIcon");
 
         tabButton.OnClick.AddListener((UnityAction)(() => { AchievementsMenuOpen.OpenMenu(instance); }));
 

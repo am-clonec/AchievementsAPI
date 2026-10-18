@@ -47,7 +47,7 @@ public static class AchievementDetailPanel
         discRect.anchoredPosition = new Vector2(P + 110f, -(P + 110f));
 
         var iconSprite = revealed ? achievement.Icon
-            : SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.ExampleIcon.png", typeof(AchievementDetailPanel).Assembly, 100);
+            : Assets.LoadSprite("ExampleIcon");
         var iconColor = achievement.Unlocked ? Color.white : new Color(0.35f, 0.35f, 0.35f);
         var icon = CreateImage(inner, "Icon", ToastSprites.TrimTransparent(iconSprite), iconColor);
         icon.preserveAspect = true;

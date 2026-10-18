@@ -81,7 +81,7 @@ public class AchievementToast
 
         Show(new ToastRequest(AchievementsStrings.GetText(AchievementsStrings.ToastUnlocked),
             AchievementsStrings.GetText(AchievementsStrings.PreviewAchievement),
-            SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.ExampleIcon.png", typeof(AchievementToast).Assembly, 100),
+            Assets.LoadSprite("ExampleIcon"),
             0, true, null, "preview"));
     }
 

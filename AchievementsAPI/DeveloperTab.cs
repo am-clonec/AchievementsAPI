@@ -1,4 +1,5 @@
 using AchievementsAPI.API;
+using UnityEngine;
 
 namespace AchievementsAPI;
 
@@ -10,12 +11,10 @@ namespace AchievementsAPI;
 /// </summary>
 public class DeveloperTab : AchievementsTab
 {
-    private const string TrophyIcon = "AchievementsAPI.Resources.AchievementsIcon.png";
-
     public override StringNames Name => AchievementsStrings.DeveloperTabName;
     public override bool IsSelectable => PlayedWithDeveloper.Unlocked;
-    public override string IconPath => TrophyIcon;
+    public override Sprite GetIcon() => Assets.LoadSprite("AchievementsIcon");
 
     public BaseAchievement PlayedWithDeveloper { get; set; } = new BaseAchievement(
-        "Among Developers", "Play a game with a developer.", TrophyIcon, rarity: 3, hidden: true);
+        "Among Developers", "Play a game with a developer.", Assets.LoadSprite("AchievementsIcon"), rarity: 3, hidden: true);
 }

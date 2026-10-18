@@ -13,8 +13,8 @@ public static class MainMenuButtons
 
     public static void SetUp(MainMenuManager menu)
     {
-        var sprit = SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.AchievementsButtonActive.png", Assembly.GetCallingAssembly(), 100);
-        var sprit2 = SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.AchievementsButton.png", Assembly.GetCallingAssembly(), 100);
+        var sprit = Assets.LoadSprite("AchievementsButtonActive");
+        var sprit2 = Assets.LoadSprite("AchievementsButton");
         button = PassiveButtonStuff.CreatePassiveButton("AchievementsMenuButton", sprit2, sprit, new Vector2(1f, 1f), () => AchievementsMenuOpen.OpenMenu(menu));
         menu.StartCoroutine(Effects.ActionAfterDelay(0.1f, new System.Action(() =>
         {
@@ -22,6 +22,10 @@ public static class MainMenuButtons
             button.inactiveSprites.GetComponent<SpriteRenderer>().color = Color.white;
         })));
         button.transform.SetParent(menu.transform.FindChild("MainUI/AspectScaler"));
-        button.transform.localPosition = new Vector3(5.6f, 1.55f, 0.1f);
+        var aspect = button.gameObject.AddComponent<AspectPosition>();
+        aspect.Alignment = AspectPosition.EdgeAlignments.RightTop;
+        aspect.DistanceFromEdge = new Vector3(0.3f, 1.45f, 0.1f);
+        aspect.updateAlways = true;
+        aspect.AdjustPosition();
     }
 }

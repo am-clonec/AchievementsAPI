@@ -150,8 +150,7 @@ public static class MenuUi
         {
             if (_trophy == null)
             {
-                _trophy = SpriteTools.LoadSpriteFromPath("AchievementsAPI.Resources.AchievementsIcon.png",
-                    typeof(MenuUi).Assembly, 100);
+                _trophy = Assets.LoadSprite("AchievementsIcon");
             }
             return ToastSprites.TrimTransparent(_trophy);
         }
@@ -162,17 +161,13 @@ public static class MenuUi
     private static Sprite _searchClear;
     private static Sprite _searchClearHover;
 
-    internal static Sprite SearchIcon => _searchIcon ??= SpriteTools.LoadSpriteFromPath(
-        "AchievementsAPI.Resources.SearchIconIdle.png", typeof(MenuUi).Assembly, 100);
+    internal static Sprite SearchIcon => _searchIcon ??= Assets.LoadSprite("SearchIconIdle");
 
-    internal static Sprite SearchIconHover => _searchIconHover ??= SpriteTools.LoadSpriteFromPath(
-        "AchievementsAPI.Resources.SearchIconHover.png", typeof(MenuUi).Assembly, 100);
+    internal static Sprite SearchIconHover => _searchIconHover ??= Assets.LoadSprite("SearchIconHover");
 
-    internal static Sprite SearchClear => _searchClear ??= SpriteTools.LoadSpriteFromPath(
-        "AchievementsAPI.Resources.SearchClearIdle.png", typeof(MenuUi).Assembly, 100);
+    internal static Sprite SearchClear => _searchClear ??= Assets.LoadSprite("SearchClearIdle");
 
-    internal static Sprite SearchClearHover => _searchClearHover ??= SpriteTools.LoadSpriteFromPath(
-        "AchievementsAPI.Resources.SearchClearHover.png", typeof(MenuUi).Assembly, 100);
+    internal static Sprite SearchClearHover => _searchClearHover ??= Assets.LoadSprite("SearchClearHover");
 
     private static Sprite _searchGlyph;
     private static Sprite _searchClearGlyph;
