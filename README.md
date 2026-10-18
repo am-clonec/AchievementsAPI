@@ -88,7 +88,7 @@ Unlock with `achievement.Unlock()`; count achievements unlock on their own via `
 
 ## Build
 
-The solution targets .NET 6: `dotnet build AchievementsAPI.sln`. CI runs `build.cake` and uploads `AchievementsAPI.dll` as an artifact.
+The solution targets .NET 6: `dotnet build AchievementsAPI.sln`. CI runs `build.cake` and uploads `AchievementsAPI.dll` as an artifact; pushing a `vX.Y.Z` tag publishes a GitHub release (see [docs/building.md](docs/building.md#releases)).
 
 ## Credits
 

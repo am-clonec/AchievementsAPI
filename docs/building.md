@@ -29,11 +29,29 @@ Set the `AmongUs` MSBuild property to a game install and the build copies the DL
 dotnet build AchievementsAPI.sln -p:AmongUs="C:\Program Files (x86)\Steam\steamapps\common\Among Us"
 ```
 
-Versions come from `build.cake`: local builds are `{VersionPrefix}-dev` (`2.0.0-dev`), CI builds get a `ci.{run}` suffix, and tag builds take the tag verbatim.
+Versions come from `build.cake`: local builds are `{VersionPrefix}-dev` (`2.0.0-dev`), CI builds get a `ci.{run}` suffix, and tag builds use the tag with the leading `v` stripped (`v2.0.0` builds `2.0.0`).
 
 ## CI
 
 `.github/workflows/main.yml` builds pushes and PRs to `master` with Cake on Ubuntu and uploads `AchievementsAPI.dll` as an artifact. `vf.yml` does the same for the `vf` branch, producing `AchievementsAPI-VF.dll`.
+
+## Releases
+
+Pushing a tag of the form `vMAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH-prerelease` (for example `v2.0.0` or `v2.0.0-rc.1`) runs `.github/workflows/release.yml`, which:
+
+1. validates the tag format and derives the version from it,
+2. builds and packs with `build.cake --target=Pack`,
+3. creates a GitHub release named after the tag with auto-generated notes (categories come from `.github/release.yml`; tags with a prerelease suffix are marked as pre-releases), attaching `AchievementsAPI.dll`, `CloneC.AchievementsAPI.{version}.nupkg` and `SHA256SUMS.txt`,
+4. pushes the package to nuget.org if a `NUGET_API_KEY` repository secret is configured (skipped otherwise).
+
+To cut a release:
+
+```
+git tag v2.0.0
+git push origin v2.0.0
+```
+
+The developer plugin (`AchievementsAPI.Developer`) is intentionally not released; see below.
 
 ## The developer plugin
 
