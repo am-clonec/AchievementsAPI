@@ -56,44 +56,27 @@
         /// </summary>
         public virtual Vector3 MenuDescOffset => new(0, 0);
 
-        /// <summary>
-        /// Optional secondary badge sprite drawn in the achievements menu (e.g. a role icon),
-        /// at <see cref="MenuSubIconOffset"/> and <see cref="MenuSubIconScale"/>. Set via object
-        /// initializer: <c>new MyAchievement(...) { SubIcon = sprite }</c>.
-        /// </summary>
-        public Sprite? SubIcon;
-
-        /// <summary>
-        /// Optional offset override for the sub-icon badge; null uses <see cref="MenuSubIconOffset"/>'s
-        /// default of (0, 0). Settable counterpart to <see cref="MenuSubIconOffset"/>.
-        /// </summary>
-        public Vector3? SubIconOffset;
-
-        /// <summary>
-        /// Optional scale override for the sub-icon badge; null uses <see cref="MenuSubIconScale"/>'s
-        /// default of (0.5, 0.5, 1). Settable counterpart to <see cref="MenuSubIconScale"/>.
-        /// </summary>
-        public Vector3? SubIconScale;
 
         /// <summary>
         /// Gets the offset for the achievement's sub-icon, if any.
         /// </summary>
-        public virtual Vector3 MenuSubIconOffset => SubIconOffset ?? new(0, 0);
+        public virtual Vector3 MenuSubIconOffset => new(0, 0);
 
         /// <summary>
         /// Gets the scale for the achievement's sub-icon, if any.
         /// </summary>
-        public virtual Vector3 MenuSubIconScale => SubIconScale ?? new(0.5f, 0.5f, 1);
+        public virtual Vector3 MenuSubIconScale => new(0.5f, 0.5f, 1);
 
         /// <summary>
+        /// Gets the achievement's sub-icon, if any.
         /// Gets the achievement's sub-icon, if any. Defaults to <see cref="SubIcon"/>.
         /// </summary>
-        public virtual Sprite? MenuSubIcon => SubIcon;
+        public virtual Sprite? MenuSubIcon => null;
 
-        /// <summary>
-        /// Gets the offset for the achievement's "Obtained" text in the toast pop up.
-        /// </summary>
-        public virtual Vector3 ToastObtainedOffset => new(0, 0);
+    /// <summary>
+    /// Gets the offset for the achievement's "Obtained" text in the toast pop up.
+    /// </summary>
+    public virtual Vector3 ToastObtainedOffset => new(0, 0);
 
         /// <summary>
         /// Gets the offset for the achievement's title in the toast pop up.
