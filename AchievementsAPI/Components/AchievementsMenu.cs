@@ -1686,7 +1686,7 @@ namespace AchievementsAPI
             var mouse = Input.mousePosition;
             if (_mousePrimed && _controllerMode &&
                 ((mouse - _lastMousePos).sqrMagnitude > 4f
-                 || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)))
+                 || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) || Input.GetMouseButtonDown(3)))
             {
                 _controllerMode = false;
                 _lastSelected = CurrentSelectable()?.gameObject;

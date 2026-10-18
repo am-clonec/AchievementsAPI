@@ -127,7 +127,7 @@ internal static class MenuInput
 
         Confirm = confirm || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)
             || Input.GetKeyDown(KeyCode.Space);
-        Cancel = cancel || Input.GetKeyDown(KeyCode.Escape);
+        Cancel = cancel || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(3);
         PrevCategory = prevCategory || Input.GetKeyDown(KeyCode.Q);
         NextCategory = nextCategory || Input.GetKeyDown(KeyCode.E);
 
