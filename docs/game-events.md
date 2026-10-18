@@ -2,7 +2,7 @@
 
 Three systems hang off the game's lifecycle: automatic resets, progress persistence, and deferred toasts. They're all driven by a handful of Harmony patches in `AchievementLifecycle`, so the events line up with real game moments.
 
-## The events
+## Events
 
 | Event | Fires on |
 | --- | --- |

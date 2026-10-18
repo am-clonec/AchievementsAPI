@@ -50,7 +50,7 @@ Access a tab from elsewhere with `AchievementsTabSingleton<MyTab>.Instance`.
 
 ## Soft dependency (optional Achievements API)
 
-If you want users to run your mod **without** Achievements API installed, keep it as a `SoftDependency` and use runtime-constructed achievements instead of subclasses. This is the pattern used by [Town of Us Mira](https://github.com/AtonyGit/TOU-Mira) and [Mira Unleashed](https://github.com/AtonyGit/TownOfUsMiraUnleashed).
+If you want users to run your mod **without** Achievements API installed, keep it as a `SoftDependency` and use runtime-constructed achievements instead of subclasses. This is the pattern used by [Town of Us Mira](https://github.com/AU-Avengers/TOU-Mira) and [Mira Unleashed](https://github.com/rewalo/TownOfUsMiraUnleashed/).
 
 Mark the dependency soft in your plugin and register tabs/achievements only when the plugin is actually loaded:
 

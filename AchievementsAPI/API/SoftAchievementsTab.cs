@@ -1,3 +1,4 @@
+using System;
 using Reactor.Localization.Utilities;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class SoftAchievementsTab : AchievementsTab
     private readonly Sprite? _icon;
     private readonly string? _categoryId;
     private readonly string? _modName;
-    private readonly Func<Sprite?>? _modIcon;
+    private readonly Func<Sprite>? _modIcon;
 
     /// <summary>
     /// Creates a new soft-registered achievements tab.

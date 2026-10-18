@@ -25,6 +25,9 @@ public static class MenuUi
     internal static readonly Color32 TrackOffColor = new(112, 112, 112, 255);
     internal static readonly Color32 ValueColor = new(190, 190, 190, 255);
     internal static readonly Color32 RimColor = new(112, 114, 118, 255);     // neutral ring for common/no-rarity
+    internal static readonly Color32 DangerColor = new(196, 64, 64, 255);
+    internal static readonly Color32 DangerHover = new(232, 96, 96, 255);
+    internal static readonly Color32 DangerPressed = new(140, 44, 44, 255);
 
     internal static Image CreateImage(Transform parent, string name, Sprite? sprite, Color color)
     {
@@ -377,9 +380,12 @@ public static class MenuUi
     // Charcoal, white-outline pill button in the game's settings style (back/preview).
     // `name` keeps the object name stable (used for controller focus lookups) while
     // the visible label is translated.
-    internal static Button CreateButton(Transform panel, string label, Vector2 position, string? name = null)
+    internal static Button CreateButton(Transform panel, string label, Vector2 position, string? name = null,
+        bool danger = false)
     {
-        var bg = CreateImage(panel, $"{name ?? label}Button", ToastSprites.ButtonBox, Color.white);
+        // ButtonBox is pre-baked charcoal, so a tint would multiply into near-black; the
+        // danger variant tints a white box of the same radius instead.
+        var bg = CreateImage(panel, $"{name ?? label}Button", danger ? ToastSprites.RoundedRectSmall : ToastSprites.ButtonBox, Color.white);
         bg.type = Image.Type.Sliced;
         var rect = bg.rectTransform;
         rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
@@ -397,10 +403,10 @@ public static class MenuUi
         var button = bg.gameObject.AddComponent<Button>();
         button.transition = Selectable.Transition.ColorTint;
         var colors = button.colors;
-        colors.normalColor = Color.white;
-        colors.highlightedColor = new Color32(200, 200, 200, 255);
-        colors.pressedColor = new Color32(150, 150, 150, 255);
-        colors.selectedColor = Color.white;
+        colors.normalColor = danger ? DangerColor : Color.white;
+        colors.highlightedColor = danger ? DangerHover : new Color32(200, 200, 200, 255);
+        colors.pressedColor = danger ? DangerPressed : new Color32(150, 150, 150, 255);
+        colors.selectedColor = danger ? DangerColor : Color.white;
         colors.colorMultiplier = 1f;
         colors.fadeDuration = 0.1f;
         button.colors = colors;
@@ -461,6 +467,12 @@ public static class MenuUi
     }
 
     internal static float EaseOutCubic(float t) => 1f - Mathf.Pow(1f - t, 3f);
+
+    internal static float EaseOutBack(float t)
+    {
+        const float c = 1.70158f;
+        return 1f + (c + 1f) * Mathf.Pow(t - 1f, 3f) + c * Mathf.Pow(t - 1f, 2f);
+    }
 
     internal static string FormatUnlockTime(DateTime utc) => utc.ToLocalTime().ToString("g");
 

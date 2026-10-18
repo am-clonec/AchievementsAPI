@@ -2,7 +2,7 @@
     <PropertyGroup>
         <PackageId>CloneC.AchievementsAPI</PackageId>
         <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>preview</LangVersion>
         <DebugType>embedded</DebugType>
 
         <VersionPrefix>2.0.0</VersionPrefix>
