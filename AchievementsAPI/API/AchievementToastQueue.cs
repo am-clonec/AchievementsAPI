@@ -60,10 +60,12 @@ public static class AchievementToastQueue
     /// so repeated progress ticks collapse into a single toast with the final value.
     /// </summary>
     /// <param name="achievement">The achievement the toast is for.</param>
-    /// <param name="unlocked">Whether this is an unlock toast; false means a progress toast.</param>
+    /// <param name="unlocked">Whether this is an unlock toast; false means a progress toast.
+    /// Progress toasts are dropped when <see cref="AchievementsConfig.ProgressToastsEnabled"/> is off.</param>
     public static void Enqueue(BaseAchievement achievement, bool unlocked)
     {
         if (!AchievementsConfig.ToastsEnabled.Value) return;
+        if (!unlocked && !AchievementsConfig.ProgressToastsEnabled.Value) return;
 
         if (achievement.ToastTiming == AchToastTiming.Immediate)
         {

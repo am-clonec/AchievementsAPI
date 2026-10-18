@@ -15,6 +15,12 @@ public static class AchievementsConfig
     public static ConfigEntry<bool> ToastsEnabled { get; private set; } = null!;
 
     /// <summary>
+    /// Whether progress toasts (shown when a count achievement advances without unlocking) are shown.
+    /// Unlock toasts are unaffected.
+    /// </summary>
+    public static ConfigEntry<bool> ProgressToastsEnabled { get; private set; } = null!;
+
+    /// <summary>
     /// Seconds a toast stays fully visible on screen.
     /// </summary>
     public static ConfigEntry<float> ToastDuration { get; private set; } = null!;
@@ -51,6 +57,9 @@ public static class AchievementsConfig
 
         ToastsEnabled = config.Bind(section, nameof(ToastsEnabled), true,
             "Whether achievement toast popups are shown.");
+
+        ProgressToastsEnabled = config.Bind(section, nameof(ProgressToastsEnabled), true,
+            "Whether progress toasts (count achievement advanced but not unlocked) are shown. Unlock toasts are unaffected.");
 
         ToastDuration = config.Bind(section, nameof(ToastDuration), 4.4f,
             new ConfigDescription(

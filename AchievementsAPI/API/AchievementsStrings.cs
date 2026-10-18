@@ -53,6 +53,7 @@ public static class AchievementsStrings
     public static readonly StringNames CategoryNeutral = Create("Neutral");
 
     public static readonly StringNames SettingToasts = Create("Show toasts");
+    public static readonly StringNames SettingProgressToasts = Create("Progress toasts");
     public static readonly StringNames SettingSound = Create("Play sound");
     public static readonly StringNames SettingVolume = Create("Volume");
     public static readonly StringNames SettingDuration = Create("Toast duration");

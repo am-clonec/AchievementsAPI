@@ -41,16 +41,17 @@ public static class AchievementsSettingsPanel
         // Full-width row strips, 76px pitch, first strip below the frame edge
         const float rowsTop = -4f;
         CreateToggleRow(CreateRowStrip(rect, rowsTop), AchievementsStrings.GetText(AchievementsStrings.SettingToasts), AchievementsConfig.ToastsEnabled);
-        CreateToggleRow(CreateRowStrip(rect, rowsTop - 76f), AchievementsStrings.GetText(AchievementsStrings.SettingSound), AchievementsConfig.ToastSoundEnabled);
-        CreateSliderRow(CreateRowStrip(rect, rowsTop - 152f), AchievementsStrings.GetText(AchievementsStrings.SettingVolume), AchievementsConfig.ToastVolume, 0f, 1f,
+        CreateToggleRowWithHelp(CreateRowStrip(rect, rowsTop - 76f), AchievementsStrings.GetText(AchievementsStrings.SettingProgressToasts), AchievementsConfig.ProgressToastsEnabled, "Show a toast when a count achievement makes progress without unlocking.");
+        CreateToggleRow(CreateRowStrip(rect, rowsTop - 152f), AchievementsStrings.GetText(AchievementsStrings.SettingSound), AchievementsConfig.ToastSoundEnabled);
+        CreateSliderRow(CreateRowStrip(rect, rowsTop - 228f), AchievementsStrings.GetText(AchievementsStrings.SettingVolume), AchievementsConfig.ToastVolume, 0f, 1f,
             v => $"{Mathf.RoundToInt(v * 100f)}%", onStep: AchievementToast.PlayVolumePreview);
-        CreateSliderRow(CreateRowStrip(rect, rowsTop - 228f), AchievementsStrings.GetText(AchievementsStrings.SettingDuration), AchievementsConfig.ToastDuration, 1f, 10f,
+        CreateSliderRow(CreateRowStrip(rect, rowsTop - 304f), AchievementsStrings.GetText(AchievementsStrings.SettingDuration), AchievementsConfig.ToastDuration, 1f, 10f,
             v => $"{v:0.0}s");
-        CreateSliderRow(CreateRowStrip(rect, rowsTop - 304f), AchievementsStrings.GetText(AchievementsStrings.SettingRareDuration), AchievementsConfig.RareToastDuration, 1f, 10f,
+        CreateSliderRow(CreateRowStrip(rect, rowsTop - 380f), AchievementsStrings.GetText(AchievementsStrings.SettingRareDuration), AchievementsConfig.RareToastDuration, 1f, 10f,
             v => $"{v:0.0}s");
-        CreateCycleRow(CreateRowStrip(rect, rowsTop - 380f), AchievementsStrings.GetText(AchievementsStrings.SettingPosition), AchievementsConfig.Position);
-        CreateToggleRowWithHelp(CreateRowStrip(rect, rowsTop - 456f), AchievementsStrings.GetText(AchievementsStrings.SettingTrackpadMode), AchievementsConfig.TrackpadMode, "Open achievements from a toast with a normal click instead of middle-click (for trackpads).");
-        CreateActionRow(CreateRowStrip(rect, rowsTop - 532f), AchievementsStrings.GetText(AchievementsStrings.SettingResetAll),
+        CreateCycleRow(CreateRowStrip(rect, rowsTop - 456f), AchievementsStrings.GetText(AchievementsStrings.SettingPosition), AchievementsConfig.Position);
+        CreateToggleRowWithHelp(CreateRowStrip(rect, rowsTop - 532f), AchievementsStrings.GetText(AchievementsStrings.SettingTrackpadMode), AchievementsConfig.TrackpadMode, "Open achievements from a toast with a normal click instead of middle-click (for trackpads).");
+        CreateActionRow(CreateRowStrip(rect, rowsTop - 608f), AchievementsStrings.GetText(AchievementsStrings.SettingResetAll),
             AchievementsStrings.GetText(AchievementsStrings.ResetAllButton), onResetAll);
 
         var preview = CreateButton(rect, AchievementsStrings.GetText(AchievementsStrings.Preview), Vector2.zero, "Preview");
