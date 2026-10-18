@@ -82,6 +82,11 @@ namespace AchievementsAPI
         private bool _restoreNavigationEvents;
         private Image _focusRing;
         private BaseAchievement _detailAchievement;
+        private RectTransform _detailSubIcon;
+        private RectTransform _tooltip;
+        private RectTransform _tooltipTail;
+        private TextMeshProUGUI _tooltipText;
+        private RectTransform _tooltipTarget;
         private GameObject _lastSelected;
         private Vector3 _lastMousePos;
         private bool _mousePrimed;
@@ -1585,6 +1590,7 @@ namespace AchievementsAPI
                 DeselectIfInside(_detailPanel);
                 _detailPanel.Destroy();
                 _detailPanel = null;
+                _detailSubIcon = null;
             }
             SetTitle(CurrentTitleText(), _currentCategory?.GetIcon() ?? AchievementIcon);
             DeselectIfInside(_settingsPanel);
@@ -1609,6 +1615,7 @@ namespace AchievementsAPI
                 DeselectIfInside(_detailPanel);
                 _detailPanel.Destroy();
                 _detailPanel = null;
+                _detailSubIcon = null;
             }
             SetTitle(AchievementsStrings.GetText(AchievementsStrings.Settings), ToastSprites.Gear);
             ShowPage(_settingsPanel);
@@ -1669,11 +1676,14 @@ namespace AchievementsAPI
             {
                 DeselectIfInside(_detailPanel);
                 _detailPanel.Destroy();
+                _detailSubIcon = null;
             }
             var revealed = !achievement.Hidden || achievement.Unlocked;
             SetTitle(revealed ? achievement.GetName() : AchievementsStrings.GetText(AchievementsStrings.HiddenAchievement),
                 revealed ? achievement.Icon : null);
             _detailPanel = AchievementDetailPanel.Create(_panel, achievement, BackToList);
+            var subIconTransform = _detailPanel.transform.Find("Disc/SubIcon");
+            _detailSubIcon = subIconTransform != null ? subIconTransform.TryCast<RectTransform>() : null;
             ShowPage(_detailPanel);
             _detailAchievement = achievement;
             if (_controllerMode) EnsureSelection();
@@ -1682,6 +1692,7 @@ namespace AchievementsAPI
         private void Update()
         {
             MenuInput.Poll();
+            UpdateSubIconTooltip();
 
             var mouse = Input.mousePosition;
             if (_mousePrimed && _controllerMode &&
@@ -1770,6 +1781,131 @@ namespace AchievementsAPI
             ring.anchoredPosition = (min + max) * 0.5f;
             ring.sizeDelta = new Vector2(max.x - min.x + 8f, max.y - min.y + 8f);
             ring.SetAsLastSibling();
+            if (_tooltip != null && _tooltip.gameObject.activeSelf) _tooltip.SetAsLastSibling();
+        }
+
+        // Sub-icon hover tooltips. The badges have raycastTarget off (and the
+        // rows sit under the hover overlay), so hover is hit-tested against the
+        // pointer each frame instead of going through the event system.
+        private void UpdateSubIconTooltip()
+        {
+            RectTransform target = null;
+            string text = null;
+
+            if (_dialog != null && _dialog.activeSelf)
+            {
+                // fall through to the hide path below
+            }
+            else if (_detailSubIcon != null && _detailSubIcon.gameObject.activeInHierarchy
+                && _detailAchievement != null && PointInRect(_detailSubIcon, 8f))
+            {
+                target = _detailSubIcon;
+                text = _detailAchievement.MenuSubIconTooltip;
+            }
+            else if (_scroll != null && _scroll.gameObject.activeInHierarchy
+                     && RectTransformUtility.RectangleContainsScreenPoint(_scroll.viewport, Input.mousePosition, null))
+            {
+                foreach (var row in _rows)
+                {
+                    if (!row.SubIcon.gameObject.activeInHierarchy || row.Achievement == null
+                        || !PointInRect(row.SubIcon.rectTransform, 8f)) continue;
+                    target = row.SubIcon.rectTransform;
+                    text = row.Achievement.MenuSubIconTooltip;
+                    break;
+                }
+            }
+
+            if (target == null || string.IsNullOrEmpty(text))
+            {
+                _tooltipTarget = null;
+                if (_tooltip != null) _tooltip.gameObject.SetActive(false);
+                return;
+            }
+
+            EnsureTooltip();
+            var isNew = target != _tooltipTarget;
+            _tooltipTarget = target;
+            if (_tooltipText.text != text)
+            {
+                _tooltipText.text = text;
+                _tooltipText.ForceMeshUpdate();
+                _tooltip.sizeDelta = new Vector2(_tooltipText.preferredWidth + 28f,
+                    _tooltipText.preferredHeight + 14f);
+            }
+
+            // Hang the bubble off the badge's right edge, the tail bridging the
+            // gap; flip it to the left side when it would run off screen. The
+            // pivot is the bubble's left-center, so `pos` is that edge.
+            target.GetWorldCorners(_itemCorners);
+            var center = (_itemCorners[0] + _itemCorners[2]) * 0.5f;
+            var width = _tooltip.sizeDelta.x * _tooltip.lossyScale.x;
+            var height = _tooltip.sizeDelta.y * _tooltip.lossyScale.y;
+            const float tailLen = 10f;
+            const float gap = 12f;
+            const float embed = 3f;
+            var flip = _itemCorners[2].x + gap + tailLen + width > Screen.width - 8f;
+            var pos = new Vector3(
+                flip ? _itemCorners[0].x - gap - width : _itemCorners[2].x + gap,
+                center.y);
+            pos.x = Mathf.Max(pos.x, 8f);
+            pos.y = Mathf.Clamp(pos.y, height * 0.5f + 8f, Screen.height - height * 0.5f - 8f);
+            _tooltip.position = pos;
+
+            // The tail's pivot is the center of its flat base edge, anchored to
+            // the bubble's facing edge and embedded a couple pixels so it reads
+            // as one continuous shape. Mirroring via localScale.x points it the
+            // other way when the bubble flips.
+            var maxTailDy = _tooltip.sizeDelta.y * 0.5f - 8f;
+            var tailDy = Mathf.Clamp((center.y - pos.y) / _tooltip.lossyScale.y, -maxTailDy, maxTailDy);
+            _tooltipTail.anchorMin = _tooltipTail.anchorMax = new Vector2(flip ? 1f : 0f, 0.5f);
+            _tooltipTail.anchoredPosition = new Vector2(flip ? -embed : embed, tailDy);
+            _tooltipTail.localScale = new Vector3(flip ? -1f : 1f, 1f, 1f);
+            _tooltip.gameObject.SetActive(true);
+            _tooltip.SetAsLastSibling();
+            if (isNew) PlayUiSound(false);
+        }
+
+        // Padded screen-space hit test: `pad` is in pixels, converted into the
+        // rect's local units so small badges get a forgiving hover area.
+        private static bool PointInRect(RectTransform rect, float pad)
+        {
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rect, Input.mousePosition, null, out var local))
+            {
+                return false;
+            }
+            var r = rect.rect;
+            var padX = pad / Mathf.Max(Mathf.Abs(rect.lossyScale.x), 0.0001f);
+            var padY = pad / Mathf.Max(Mathf.Abs(rect.lossyScale.y), 0.0001f);
+            return local.x >= r.xMin - padX && local.x <= r.xMax + padX
+                   && local.y >= r.yMin - padY && local.y <= r.yMax + padY;
+        }
+
+        private void EnsureTooltip()
+        {
+            if (_tooltip != null) return;
+            var box = CreateImage(transform, "SubIconTooltip", ToastSprites.ButtonBox, Color.white);
+            box.type = Image.Type.Sliced;
+            box.raycastTarget = false;
+            _tooltip = box.rectTransform;
+            _tooltip.anchorMin = _tooltip.anchorMax = new Vector2(0.5f, 0.5f);
+            _tooltip.pivot = new Vector2(0f, 0.5f);
+
+            var tail = CreateImage(_tooltip, "Tail", ToastSprites.BubbleTail, Color.white);
+            tail.raycastTarget = false;
+            _tooltipTail = tail.rectTransform;
+            _tooltipTail.pivot = new Vector2(1f, 0.5f);
+            _tooltipTail.sizeDelta = new Vector2(10f, 20f);
+
+            _tooltipText = CreateText(_tooltip, "Text", "", 20f, Color.white,
+                FontStyles.Bold, TextAlignmentOptions.Center);
+            _tooltipText.overflowMode = TextOverflowModes.Overflow;
+            var textRect = _tooltipText.rectTransform;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(14f, 7f);
+            textRect.offsetMax = new Vector2(-14f, -7f);
+            _tooltip.gameObject.SetActive(false);
         }
 
         private Selectable CurrentSelectable()

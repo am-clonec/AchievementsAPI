@@ -74,6 +74,13 @@
         /// </summary>
         public virtual Sprite? MenuSubIcon => null;
 
+        /// <summary>
+        /// Gets the tooltip text shown when hovering the achievement's sub-icon in the
+        /// achievements menu (e.g. the name of the role or modifier the sub-icon represents).
+        /// Null or empty shows no tooltip.
+        /// </summary>
+        public virtual string? MenuSubIconTooltip => null;
+
     /// <summary>
     /// Gets the offset for the achievement's "Obtained" text in the toast pop up.
     /// </summary>

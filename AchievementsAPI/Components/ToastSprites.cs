@@ -34,6 +34,7 @@ public static class ToastSprites
     private static Sprite _wikiPanel;
     private static Sprite? _outlineBoxSmall;
     private static Sprite? _buttonBox;
+    private static Sprite? _bubbleTail;
     private static Sprite? _panelBoxSmall;
     private static Sprite? _closeX;
 
@@ -113,6 +114,13 @@ public static class ToastSprites
     public static Sprite ButtonBox => _buttonBox ??= CreateSolidRoundedBox(14f, new Color32(61, 64, 64, 255), "AchMenuButtonBox");
 
     /// <summary>
+    /// A solid speech-bubble tail in the <see cref="ButtonBox"/> color. The flat
+    /// attachment edge is the right side of the texture; it tapers to a soft,
+    /// centered tip on the left. Mirror via localScale.x to point right.
+    /// </summary>
+    public static Sprite BubbleTail => _bubbleTail ??= CreateBubbleTail();
+
+    /// <summary>
     /// <see cref="PanelBox"/> with corner radius 14.
     /// </summary>
     public static Sprite PanelBoxSmall => _panelBoxSmall ??= CreateOutlineBox(14f, new Color32(0, 0, 0, 255), new Color32(0, 0, 0, 255), "AchMenuPanelBoxSmall", 20f);
@@ -139,6 +147,7 @@ public static class ToastSprites
         _ = RoundedRect; yield return null;
         _ = RoundedRectSmall; yield return null;
         _ = RoundedRectTiny; yield return null;
+        _ = BubbleTail; yield return null;
         _ = Squircle; yield return null;
         _ = Gear; yield return null;
         _ = CloseX; yield return null;
@@ -388,6 +397,27 @@ public static class ToastSprites
         tex.DontUnload();
         var sprite = Sprite.Create(tex, new Rect(0, 0, Size, Size), new Vector2(0.5f, 0.5f), 100f,
             0, SpriteMeshType.FullRect, new Vector4(radius, radius, radius, radius));
+        sprite.DontUnload();
+        return sprite;
+    }
+
+    // Symmetric rounded speech-bubble tail. The width profile uses smoothstep
+    // so the flat attachment edge (right side) is vertical and blends into the
+    // bubble, while the tip on the left is softly rounded instead of sharp.
+    // Mipmapped so the downscaled tail stays smooth.
+    private static Sprite CreateBubbleTail()
+    {
+        const float baseHalf = Size * 0.26f;
+        var tex = CreateTexture((x, y) =>
+        {
+            var t = x / (Size - 1f);
+            var halfWidth = baseHalf * Mathf.SmoothStep(0f, 1f, t);
+            var inside = halfWidth - Mathf.Abs(y - (Size - 1) / 2f);
+            return new Color(61f / 255f, 64f / 255f, 64f / 255f, Mathf.Clamp01(inside + 0.5f));
+        }, "AchMenuBubbleTail", mipmaps: true);
+
+        tex.DontUnload();
+        var sprite = Sprite.Create(tex, new Rect(0, 0, Size, Size), new Vector2(1f, 0.5f), 100f);
         sprite.DontUnload();
         return sprite;
     }

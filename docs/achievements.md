@@ -77,6 +77,8 @@ tab.RegisterAchievement(new RuntimeAchievement("Hitman", "Prophecy your target's
 
 `SubIcon`, `SubIconOffset` and `SubIconScale` are plain settable fields on `BaseAchievement`. Subclass-based mods can instead override the `MenuSubIcon` / `MenuSubIconOffset` / `MenuSubIconScale` properties for dynamic behavior (e.g. lazily loading bundle assets). Default scale is `(0.5, 0.5, 1)`.
 
+Set `MenuSubIconTooltip` (or `MenuSubIconTooltipProvider` on the runtime variants) to show a small hover tooltip over the badge — handy for telling the player which role or modifier the icon belongs to. Null or empty means no tooltip.
+
 ### Art and layout overrides
 
 Everything the menu and toasts look up is virtual:
@@ -88,10 +90,11 @@ Everything the menu and toasts look up is virtual:
 | `ToastBgSprite` | `null` | Unused by the current toast; kept for compatibility |
 | `MenuIconOffset`, `MenuTitleOffset`, `MenuDescOffset` | `(0, 0)` | Fine-tuning for custom art |
 | `MenuSubIcon*` | from `SubIcon*` fields | Sub-icon badge (above) |
+| `MenuSubIconTooltip` | `null` | Hover tooltip on the sub-icon badge (above) |
 | `ToastObtainedOffset`, `ToastTitleOffset`, `ToastIconOffset` | `(0, 0)` | Toast layout |
 | `RarityOnBgSprite` | `true` | Set to false to keep the background untinted |
 
-The runtime variants expose the same surface as fields and delegates instead of overrides: `IconProvider`, `MenuBgProvider`, `ToastBgProvider`, `MenuSubIconProvider`, plus `*Override` offset fields. Providers are invoked lazily, so you can defer asset-bundle loads until the menu actually asks for the sprite.
+The runtime variants expose the same surface as fields and delegates instead of overrides: `IconProvider`, `MenuBgProvider`, `ToastBgProvider`, `MenuSubIconProvider`, `MenuSubIconTooltipProvider`, plus `*Override` offset fields. Providers are invoked lazily, so you can defer asset-bundle loads until the menu actually asks for the sprite.
 
 ## CountAchievement
 

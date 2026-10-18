@@ -26,6 +26,9 @@ public class RuntimeAchievement : BaseAchievement
     /// <summary>Lazily resolves the sub-icon in the achievements menu.</summary>
     public Func<Sprite?>? MenuSubIconProvider;
 
+    /// <summary>Lazily resolves the sub-icon hover tooltip in the achievements menu.</summary>
+    public Func<string?>? MenuSubIconTooltipProvider;
+
     public Vector3? MenuIconOffsetOverride;
     public Vector3? MenuTitleOffsetOverride;
     public Vector3? MenuDescOffsetOverride;
@@ -95,6 +98,9 @@ public class RuntimeAchievement : BaseAchievement
     public override Sprite? MenuSubIcon => MenuSubIconProvider?.Invoke() ?? base.MenuSubIcon;
 
     /// <inheritdoc />
+    public override string? MenuSubIconTooltip => MenuSubIconTooltipProvider?.Invoke() ?? base.MenuSubIconTooltip;
+
+    /// <inheritdoc />
     public override Vector3 MenuIconOffset => MenuIconOffsetOverride ?? base.MenuIconOffset;
 
     /// <inheritdoc />
@@ -131,6 +137,9 @@ public class RuntimeCountAchievement : CountAchievement
     /// <inheritdoc cref="RuntimeAchievement.MenuSubIconProvider"/>
     public Func<Sprite?>? MenuSubIconProvider;
 
+    /// <inheritdoc cref="RuntimeAchievement.MenuSubIconTooltipProvider"/>
+    public Func<string?>? MenuSubIconTooltipProvider;
+
     public Vector3? MenuIconOffsetOverride;
     public Vector3? MenuTitleOffsetOverride;
     public Vector3? MenuDescOffsetOverride;
@@ -163,6 +172,9 @@ public class RuntimeCountAchievement : CountAchievement
 
     /// <inheritdoc />
     public override Sprite? MenuSubIcon => MenuSubIconProvider?.Invoke() ?? base.MenuSubIcon;
+
+    /// <inheritdoc />
+    public override string? MenuSubIconTooltip => MenuSubIconTooltipProvider?.Invoke() ?? base.MenuSubIconTooltip;
 
     /// <inheritdoc />
     public override Vector3 MenuIconOffset => MenuIconOffsetOverride ?? base.MenuIconOffset;
