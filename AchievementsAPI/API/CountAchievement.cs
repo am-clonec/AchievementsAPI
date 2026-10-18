@@ -175,11 +175,13 @@ public class CountAchievement : BaseAchievement
     }
     /// <summary>
     /// Method to set the progress of this achievement.
+    /// Does nothing while <see cref="AchievementsManager.UnlockingBlocked"/> is true (e.g. freeplay).
     /// </summary>
     /// <param name="value">The progress value.</param>
     /// <param name="showOnUI">Shows an unlock animation on the hud.</param>
     public void SetValue(int value, bool showOnUI = true)
     {
+        if (AchievementsManager.UnlockingBlocked) return;
         CurrentValue = value;
 
         if (CurrentValue >= RequiredValue)

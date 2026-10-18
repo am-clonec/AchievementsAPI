@@ -11,6 +11,18 @@ public static class AchievementsManager
     public static List<AchievementsTab> Tabs = new();
 
     /// <summary>
+    /// Extra conditions under which achievements must not unlock or gain progress (e.g. a mod's custom
+    /// freeplay mode). Freeplay (<see cref="TutorialManager.InstanceExists"/>) is always blocked.
+    /// </summary>
+    public static List<Func<bool>> UnlockBlockers = new();
+
+    /// <summary>
+    /// True while achievement unlocks and progress are suppressed: in freeplay, or when any
+    /// <see cref="UnlockBlockers"/> predicate returns true.
+    /// </summary>
+    public static bool UnlockingBlocked => TutorialManager.InstanceExists || UnlockBlockers.Any(blocker => blocker());
+
+    /// <summary>
     /// Shared categories shown in the Achievements Menu, seeded with the built-ins from
     /// <see cref="AchievementCategories"/>. Mods may add more via <see cref="GetOrCreateCategory"/>.
     /// </summary>

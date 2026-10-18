@@ -161,12 +161,13 @@
         public string Id;
         /// <summary>
         /// Method to unlock this achievement.
+        /// Does nothing while <see cref="AchievementsManager.UnlockingBlocked"/> is true (e.g. freeplay).
         /// </summary>
         /// <param name="showOnUI">Shows an unlock animation on the hud.</param>
         /// <param name="doStorageUpdate">Indicates whether to update the storage again. Used to make CountAchievements properly update.</param>
         public void Unlock(bool showOnUI = true, bool doStorageUpdate = true)
         {
-            if (Unlocked) return;
+            if (Unlocked || AchievementsManager.UnlockingBlocked) return;
             Unlocked = true;
             if (doStorageUpdate) AchievementStorage.AchievementStorageUpdate(this, true);
             if (showOnUI) AchievementToastQueue.TryEnqueue(this, true);
