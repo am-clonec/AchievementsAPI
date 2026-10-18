@@ -31,11 +31,11 @@ An Among Us API for registering mod achievements, tracking progress, and display
   <table>
     <tr>
       <td align="center">
-        <img alt="Achievement progress toast" src="Images/ExampleAchievement.png" /><br />
+        <img width="420" alt="Achievement progress toast" src="Images/ExampleAchievement.png" /><br />
         <sub>Progress notification</sub>
       </td>
       <td align="center">
-        <img alt="Toast settings page with preview" src="Images/Settings.png" /><br />
+        <img width="420" alt="Toast settings page with preview" src="Images/Settings.png" /><br />
         <sub>Toast settings and preview</sub>
       </td>
     </tr>
