@@ -188,9 +188,9 @@ public class CountAchievement : BaseAchievement
             if (showOnUI && !Hidden) AchievementToastQueue.Enqueue(this, true);
             return;
         }
-        if (showOnUI && !Unlocked) AchievementToastQueue.Enqueue(this, false);
+        if (showOnUI && !Unlocked && !Hidden) AchievementToastQueue.Enqueue(this, false);
         AchievementStorage.AchievementStorageUpdate(this, value, Unlocked);
-        
+
     }
 }
 
