@@ -181,16 +181,22 @@ public class CountAchievement : BaseAchievement
     public void SetValue(int value, bool showOnUI = true)
     {
         CurrentValue = value;
+
         if (CurrentValue >= RequiredValue)
         {
             Unlock(false, false);
             AchievementStorage.AchievementStorageUpdate(this, value, true);
-            if (showOnUI && !Hidden) AchievementToastQueue.Enqueue(this, true);
+
+            if (showOnUI)
+                AchievementToastQueue.TryEnqueue(this, true);
+
             return;
         }
-        if (showOnUI && !Unlocked) AchievementToastQueue.Enqueue(this, false);
+
         AchievementStorage.AchievementStorageUpdate(this, value, Unlocked);
-        
+
+        if (showOnUI && !Unlocked && !(Hidden && HideProgress))
+            AchievementToastQueue.TryEnqueue(this, false);
     }
 }
 

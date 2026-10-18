@@ -64,19 +64,27 @@ public static class XboxToast
     private static IEnumerator CoRunQueue()
     {
         _running = true;
-        while (_queue.Count > 0)
+        try
         {
-            var request = _queue.Dequeue();
-            var instance = CreateToast(request);
-            yield return CoPlay(instance, request);
-            instance.Root.gameObject.Destroy();
-            // Destroyed objects get no PointerExit/PointerUp, so drop their hover/drag state
-            _hoverCount = 0;
-            _dragging = false;
-            yield return new WaitForSecondsRealtime(0.2f);
+            while (_queue.Count > 0)
+            {
+                var request = _queue.Dequeue();
+                ToastInstance? instance = null;
+                try { instance = CreateToast(request); }
+                catch (System.Exception e) { AchievementsAPIPlugin.Instance.Log.LogWarning($"Failed to build toast for {request.AchievementId}: {e}"); }
+                if (instance == null) continue;
+                yield return CoPlay(instance, request);
+                if (instance.Root != null) instance.Root.gameObject.Destroy();
+                // Destroyed objects get no PointerExit/PointerUp, so drop their hover/drag state
+                _hoverCount = 0;
+                _dragging = false;
+                yield return new WaitForSecondsRealtime(0.2f);
+            }
         }
-
-        _running = false;
+        finally
+        {
+            _running = false;
+        }
     }
 
     // Builds the shared canvas, sprite set, font and chime clips at the main

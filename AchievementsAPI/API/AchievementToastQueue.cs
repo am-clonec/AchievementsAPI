@@ -76,6 +76,13 @@ public static class AchievementToastQueue
         bucket.Add(new QueuedToast(achievement, unlocked));
     }
 
+    /// <summary>Like <see cref="Enqueue"/> but never throws; toast failures are logged and ignored so they can't block unlocks.</summary>
+    public static void TryEnqueue(BaseAchievement achievement, bool unlocked)
+    {
+        try { Enqueue(achievement, unlocked); }
+        catch (System.Exception e) { AchievementsAPIPlugin.Instance.Log.LogWarning($"Failed to show toast for {achievement.Id}: {e}"); }
+    }
+
     /// <summary>
     /// Removes any pending toast for the given achievement from every bucket.
     /// </summary>
@@ -96,7 +103,14 @@ public static class AchievementToastQueue
         var bucket = GetBucket(timing);
         foreach (var toast in bucket)
         {
-            Show(toast.Achievement, toast.Unlocked);
+            try
+            {
+                Show(toast.Achievement, toast.Unlocked);
+            }
+            catch (System.Exception e)
+            {
+                AchievementsAPIPlugin.Instance.Log.LogWarning($"Failed to show toast for {toast.Achievement.Id}: {e}");
+            }
         }
 
         bucket.Clear();

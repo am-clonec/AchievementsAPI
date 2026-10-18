@@ -160,10 +160,10 @@
         /// <param name="doStorageUpdate">Indicates whether to update the storage again. Used to make CountAchievements properly update.</param>
         public void Unlock(bool showOnUI = true, bool doStorageUpdate = true)
         {
-            if (showOnUI && !Unlocked) AchievementToastQueue.Enqueue(this, true);
-            if (Unlocked) return; //Won't unlock an already unlocked achievement
+            if (Unlocked) return;
             Unlocked = true;
             if (doStorageUpdate) AchievementStorage.AchievementStorageUpdate(this, true);
+            if (showOnUI) AchievementToastQueue.TryEnqueue(this, true);
 
         }
         /// <summary>

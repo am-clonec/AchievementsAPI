@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Reactor.Utilities;
 using UnityEngine;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -32,6 +33,7 @@ public class AchievementStorage
 
     private static readonly Dictionary<string, AchievementData> _index = new();
     private static bool _saveScheduled;
+    private static bool _dirty;
 
     private static void EnsureIndex()
     {
@@ -55,9 +57,20 @@ public class AchievementStorage
 
     private static void RequestSave()
     {
+        _dirty = true;
         if (_saveScheduled) return;
         _saveScheduled = true;
         Coroutines.Start(CoSave());
+    }
+
+    /// <summary>
+    /// Flushes any pending debounced save to disk immediately.
+    /// </summary>
+    public static void FlushPendingSave()
+    {
+        if (!_saveScheduled && !_dirty) return;
+        _saveScheduled = false;
+        Save();
     }
 
     private static System.Collections.IEnumerator CoSave()
@@ -74,8 +87,7 @@ public class AchievementStorage
         var data = GetData(achievement);
         SetUnlocked(data, unlocked);
 
-        _saveScheduled = false;
-        Save();
+        RequestSave();
     }
 
     // Records the UTC time when an achievement transitions to unlocked, and
@@ -202,13 +214,15 @@ public class AchievementStorage
 
     public static void Save()
     {
-        var directory = Path.GetDirectoryName(JsonPath);
+        var lookup = new Dictionary<string, BaseAchievement>();
+        foreach (var achievement in AchievementsManager.Tabs.SelectMany(t => t.GetAchievements()))
+        {
+            lookup.TryAdd(achievement.Id, achievement);
+        }
 
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
         var persisted = BaseAchievements.Select(data =>
         {
-            var achievement = AchievementsManager.FindAchievement(data.Id)?.Achievement;
+            lookup.TryGetValue(data.Id, out var achievement);
             var progress = achievement is CountAchievement count &&
                            count.ProgressPersists != AchPersistence.ThroughoutSessions &&
                            !data.Unlocked
@@ -224,7 +238,41 @@ public class AchievementStorage
             };
         }).ToList();
 
-        File.WriteAllBytes(JsonPath, AchievementCrypto.Encrypt(JsonSerializer.Serialize(persisted)));
+        byte[] bytes;
+        try
+        {
+            bytes = AchievementCrypto.Encrypt(JsonSerializer.Serialize(persisted));
+        }
+        catch (Exception e)
+        {
+            AchievementsAPIPlugin.Instance.Log.LogWarning($"Failed to serialize achievements save: {e}");
+            return;
+        }
+
+        var delays = new[] { 50, 100, 200, 400, 800 };
+        for (var attempt = 0; attempt < delays.Length; attempt++)
+        {
+            try
+            {
+                var directory = Path.GetDirectoryName(JsonPath);
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
+                var tmp = JsonPath + ".tmp";
+                File.WriteAllBytes(tmp, bytes);
+                File.Move(tmp, JsonPath, true);
+                _dirty = false;
+                return;
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            {
+                if (attempt + 1 < delays.Length) Thread.Sleep(delays[attempt]);
+            }
+        }
+
+        AchievementsAPIPlugin.Instance.Log.LogWarning($"Failed to write achievements save to {JsonPath}; will retry.");
+        _dirty = true;
+        RequestSave();
     }
 
     // Corrupt files (bad HMAC, undecryptable, or invalid JSON) are backed up

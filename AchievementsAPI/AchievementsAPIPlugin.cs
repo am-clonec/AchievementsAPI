@@ -6,6 +6,8 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Reactor;
 using Reactor.Utilities;
+using Reactor.Utilities.Extensions;
+using UnityEngine;
 
 namespace AchievementsAPI;
 
@@ -27,5 +29,9 @@ public partial class AchievementsAPIPlugin : BasePlugin
         AchievementsConfig.Bind(Config);
         AchievementsManager.Initialize();
         Harmony.PatchAll();
+
+        var flusher = new GameObject("AchievementStorageFlusher");
+        flusher.DontDestroyOnLoad();
+        flusher.AddComponent<AchievementStorageFlusher>();
     }
 }

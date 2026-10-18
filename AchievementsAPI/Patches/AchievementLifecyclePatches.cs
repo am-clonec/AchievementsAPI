@@ -15,6 +15,7 @@ public static class AchievementLifecycle
         ResetTriggered(AchResetTrigger.OnGameEnd);
         AchievementToastQueue.Flush(AchToastTiming.OnGameEnd);
         AchievementToastQueue.FlushAll();
+        AchievementStorage.FlushPendingSave();
     }
 
     internal static void OnMeetingStart()
