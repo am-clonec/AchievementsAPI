@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Reflection;
 using AchievementsAPI.API;
 using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes;
 using UnityEngine;
 
 namespace AchievementsAPI.Patches;
@@ -43,10 +45,16 @@ public static class DeveloperPresencePatches
     }
 
     // Guaranteed everyone is spawned by the time the intro ends
-    [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
-    [HarmonyPostfix]
-    public static void OnIntroDestroyedPatch()
+    [HarmonyPatch]
+    public static class OnIntroDestroyedPatch
     {
-        DeveloperPresence.Announce();
+        public static MethodBase TargetMethod() => 
+            StateMachineWrapper<IntroCutscene>.GetStateMachineMoveNext(nameof(IntroCutscene.CoBegin))!;
+
+        public static void Postfix(Il2CppObjectBase __instance)
+        {
+            if (new StateMachineWrapper<IntroCutscene>(__instance).State != -1) return;
+            DeveloperPresence.Announce();
+        }
     }
 }

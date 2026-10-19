@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Reactor" Version="2.5.0-ci.371" />
+        <PackageReference Include="Reactor" Version="2.5.0-ci.384" />
         <Compile Remove="Backend/VentFramework/**" />
     </ItemGroup>
 
