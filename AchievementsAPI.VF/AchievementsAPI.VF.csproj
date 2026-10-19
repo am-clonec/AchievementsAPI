@@ -16,9 +16,6 @@
             <HintPath>../lib/VentFrameworkContinued.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Compile Update="..\AchievementsAPI\Backend\VentFramework\StateMachineWrapper.cs">
-          <Link>Backend\VentFramework\StateMachineWrapper.cs</Link>
-        </Compile>
     </ItemGroup>
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUsVF)' != ''">
