@@ -92,8 +92,14 @@ internal static class Bundles
     public static AssetBundle Load(string name)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var fileName = GetFileName(name, includeArchitecture: true);
 
+        return TryLoad(assembly, GetFileName(name, includeArchitecture: true))
+               ?? TryLoad(assembly, GetFileName(name, includeArchitecture: false))
+               ?? throw new IOException($"Couldn't find an asset bundle named {name}");
+    }
+
+    private static AssetBundle? TryLoad(Assembly assembly, string fileName)
+    {
         if (TryFindFile(assembly, fileName, out var filePath))
         {
             return AssetBundle.LoadFromFile(filePath);
@@ -104,6 +110,6 @@ internal static class Bundles
             return AssetBundle.LoadFromMemory(data);
         }
 
-        throw new IOException($"Couldn't find an asset bundle named {fileName}");
+        return null;
     }
 }
