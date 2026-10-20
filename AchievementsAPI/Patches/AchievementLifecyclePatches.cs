@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Reflection;
 using AchievementsAPI.API;
 using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes;
 
 namespace AchievementsAPI.Patches;
 
@@ -101,10 +103,22 @@ public static class AchievementLifecycle
     }
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.ReEnableGameplay))]
-    [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
     [HarmonyPrefix]
     public static void OnRoundStartPatch()
     {
         OnRoundStart();
+    }
+    
+    [HarmonyPatch]
+    public static class IntroDestroyPatch
+    {
+        public static MethodBase TargetMethod() => 
+            StateMachineWrapper<IntroCutscene>.GetStateMachineMoveNext(nameof(IntroCutscene.CoBegin))!;
+
+        public static void Prefix(Il2CppObjectBase __instance)
+        {
+            if (new StateMachineWrapper<IntroCutscene>(__instance).State != -1) return;
+            OnRoundStartPatch();
+        }
     }
 }
