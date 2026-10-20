@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes;
-using VentLib.Logging;
 
 namespace AchievementsAPI.Backend;
 
@@ -103,18 +102,18 @@ public class StateMachineWrapper<T> where T : Il2CppObjectBase
 
         if (showRoleStateMachine == null)
         {
-            StaticLogger.Exception($"Failed to find {methodName} state machine for {typeName}");
+            VentLib.Logging.StaticLogger.Exception($"Failed to find {methodName} state machine for {typeName}");
             return null;
         }
 
         var moveNext = AccessTools.Method(showRoleStateMachine, "MoveNext");
         if (moveNext == null)
         {
-            StaticLogger.Exception($"Failed to find MoveNext method for {typeName}.{methodName}");
+            VentLib.Logging.StaticLogger.Exception($"Failed to find MoveNext method for {typeName}.{methodName}");
             return null;
         }
 
-        StaticLogger.Info($"Found {methodName}.MoveNext");
+        VentLib.Logging.StaticLogger.Info($"Found {methodName}.MoveNext");
         return moveNext;
     }
 }
