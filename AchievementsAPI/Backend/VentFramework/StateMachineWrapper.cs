@@ -7,6 +7,8 @@ using Il2CppInterop.Runtime.InteropTypes;
 
 namespace AchievementsAPI.Backend;
 
+// code from https://github.com/Lotus-AU/LotusContinued/blob/872ea7c8b5eac37d57aad3ac3b017b80719e139c/src/Utilities/StateMachineWrapper.cs
+// which is modified from https://github.com/All-Of-Us-Mods/MiraAPI/blob/master/MiraAPI/Utilities/StateMachineWrapper.cs
 public class StateMachineWrapper<T> where T : Il2CppObjectBase
 {
     private readonly Il2CppObjectBase _stateMachine;
@@ -91,7 +93,8 @@ public class StateMachineWrapper<T> where T : Il2CppObjectBase
         _propertyCache[parameterName] = property;
         property.SetValue(_stateMachine, value);
     }
-    
+
+    // https://github.com/All-Of-Us-Mods/MiraAPI/blob/eac442443bf85051210c8957605a524fb5136e8b/MiraAPI/Utilities/Helpers.cs#L43
     public static MethodBase? GetStateMachineMoveNext(string methodName)
     {
         var typeName = typeof(T).FullName;
